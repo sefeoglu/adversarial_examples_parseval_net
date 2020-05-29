@@ -2,7 +2,7 @@ from collections import namedtuple
 
 import numpy as np
 import tensorflow as tf
-from utils import utils
+import utils
 
 HParams = namedtuple('HParams',
                     'batch_size, num_classes, num_residual_units, k, '
