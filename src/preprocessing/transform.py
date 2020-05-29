@@ -1,5 +1,9 @@
 import numpy as np 
 
 
-class transform:
+class transform(object):
+    def __init__(self):
+        """ doc string"""
+        pass
+    
 
