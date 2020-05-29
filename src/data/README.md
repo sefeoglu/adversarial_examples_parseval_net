@@ -1,9 +1,11 @@
 `data.pz` is a zipped pickled file containing a list of Python dictionaries.
 
 To load the data in Python 3, for example, you could do the following:
+```python
 with open('data.pz', 'rb') as file_:
 	with gzip.GzipFile(fileobj=file_) as gzf:
 		data = pickle.load(gzf, encoding='latin1', fix_imports=True)
+```
 
 Each dictionary corresponds to one data point with the following fields:
 'crop': a numpy array containing a normalized crop of the region around a person's eye.
@@ -11,6 +13,7 @@ Each dictionary corresponds to one data point with the following fields:
 'person': person ID
 
 Example:
+```
 {'crop': array([[-0.35361138,  0.327142  , -1.0343647 , ..., -0.35361138,
          -0.08131002, -0.21746069],
         [ 0.05484066,  0.327142  ,  0.05484066, ...,  0.4632927 ,
@@ -26,20 +29,27 @@ Example:
           0.4632927 ,  0.4632927 ]], dtype=float32),
  'label': 'open',
  'person': 'CN2019040106'}
-
+```
 More statistics:
 
 In:
+```
 from collections import Counter
 Counter([e['label'] for e in data])
+```
 Out:
+```
 Counter({'closed': 1500,
          'notVisible': 1346,
          'open': 1500,
          'partiallyOpen': 1376})
+```
 In:
+```
 Counter([e['person'] for e in data])
+```
 Out:
+```
 Counter({'CN2019040101': 120,
          'CN2019040102': 120,
          'CN2019040106': 120,
@@ -90,6 +100,7 @@ Counter({'CN2019040101': 120,
          'PR19050301': 98,
          'PR19050901': 120,
          'PR19051404': 98})
+```
 
 Remarks:
 - Eyes are only roughly centered within the crops. They are not perfectly aligned.
