@@ -1,9 +1,14 @@
+
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../'))
+
 from collections import namedtuple
 
-import numpy as np
-import tensorflow as tf
-import utils
 
+import tensorflow as tf
+import _utils
+import numpy as np
 HParams = namedtuple('HParams',
                     'batch_size, num_classes, num_residual_units, k, '
                     'weight_decay, initial_lr, decay_step, lr_decay, '
@@ -15,14 +20,15 @@ class WideResNet(object):
         self._hp = hp # hyperparameters
         self._images = images #input images
         self._labels = labels #output labels
-        self._global_steps = global_steps
+        self._global_step = global_steps
         self.is_train = tf.placeholder(tf.bool)
 
     def build_model(self):
         """build resnet"""
         print("Building model....")
         print('\n Building unit init_conv')
-        x = utils._conv(self._images, 68, 100, 1, name='init_conv')
+        x = _utils._conv(self._images, 68, 100, 1, name="init_conv")
+       
         #Residual Blocks
         filters = [16,16*self._hp.k, 32*self._hp.k, 64*self._hp.k]
         strides = [1, 2, 2]
@@ -31,8 +37,8 @@ class WideResNet(object):
             # First residual unit
             with tf.variable_scope('unit_%d_0' % i) as scope:
                 print('\tBuilding residual unit: %s' % scope.name)
-                x = utils._bn(x, self.is_train, self._global_step, name='bn_1')
-                x = utils._relu(x, name='relu_1')
+                x = _utils._bn(x, self.is_train, self._global_step, name='bn_1')
+                x = _utils._relu(x, name='relu_1')
 
                 # Shortcut
                 if filters[i-1] == filters[i]:
@@ -42,13 +48,13 @@ class WideResNet(object):
                         shortcut = tf.nn.max_pool(x, [1, strides[i-1], strides[i-1], 1],
                                                   [1, strides[i-1], strides[i-1], 1], 'VALID')
                 else:
-                    shortcut = utils._conv(x, 1, filters[i], strides[i-1], name='shortcut')
+                    shortcut = _utils._conv(x, 1, filters[i], strides[i-1], name='shortcut')
 
                 # Residual
-                x = utils._conv(x, 3, filters[i], strides[i-1], name='conv_1')
-                x = utils._bn(x, self.is_train, self._global_step, name='bn_2')
-                x = utils._relu(x, name='relu_2')
-                x = utils._conv(x, 3, filters[i], 1, name='conv_2')
+                x = _utils._conv(x, 3, filters[i], strides[i-1], name='conv_1')
+                x = _utils._bn(x, self.is_train, self._global_step, name='bn_2')
+                x = _utils._relu(x, name='relu_2')
+                x = _utils._conv(x, 3, filters[i], 1, name='conv_2')
 
                 # Merge
                 x = x + shortcut
@@ -60,12 +66,12 @@ class WideResNet(object):
                     shortcut = x
 
                     # Residual
-                    x = utils._bn(x, self.is_train, self._global_step, name='bn_1')
-                    x = utils._relu(x, name='relu_1')
-                    x = utils._conv(x, 3, filters[i], 1, name='conv_1')
-                    x = utils._bn(x, self.is_train, self._global_step, name='bn_2')
-                    x = utils._relu(x, name='relu_2')
-                    x = utils._conv(x, 3, filters[i], 1, name='conv_2')
+                    x = _utils._bn(x, self.is_train, self._global_step, name='bn_1')
+                    x = _utils._relu(x, name='relu_1')
+                    x = _utils._conv(x, 3, filters[i], 1, name='conv_1')
+                    x = _utils._bn(x, self.is_train, self._global_step, name='bn_2')
+                    x = _utils._relu(x, name='relu_2')
+                    x = _utils._conv(x, 3, filters[i], 1, name='conv_2')
 
                     # Merge
                     x = x + shortcut
@@ -73,8 +79,8 @@ class WideResNet(object):
         # Last unit
         with tf.variable_scope('unit_last') as scope:
             print('\tBuilding unit: %s' % scope.name)
-            x = utils._bn(x, self.is_train, self._global_step)
-            x = utils._relu(x)
+            x = _utils._bn(x, self.is_train, self._global_step)
+            x = _utils._relu(x)
             x = tf.reduce_mean(x, [1, 2])
 
         # Logit
@@ -82,7 +88,7 @@ class WideResNet(object):
             print('\tBuilding unit: %s' % scope.name)
             x_shape = x.get_shape().as_list()
             x = tf.reshape(x, [-1, x_shape[1]])
-            x = utils._fc(x, self._hp.num_classes)
+            x = _utils._fc(x, self._hp.num_classes)
 
         self._logits = x
 
@@ -104,7 +110,7 @@ class WideResNet(object):
     def build_train_op(self):
         # Add l2 loss
         with tf.variable_scope('l2_loss'):
-            costs = [tf.nn.l2_loss(var) for var in tf.get_collection(utils.WEIGHT_DECAY_KEY)]
+            costs = [tf.nn.l2_loss(var) for var in tf.get_collection(_utils.WEIGHT_DECAY_KEY)]
             # for var in tf.get_collection(utils.WEIGHT_DECAY_KEY):
                 # tf.summary.histogram(var.op.name, var)
             l2_loss = tf.multiply(self._hp.weight_decay, tf.add_n(costs))
@@ -128,3 +134,18 @@ class WideResNet(object):
                 self.train_op = tf.no_op()
         else:
             self.train_op = apply_grad_op
+if __name__ == "__main__":
+    init_step = 0
+    global_step = tf.Variable(0, trainable=False, name='global_step')
+
+    # Build a Graph that computes the predictions from the inference model.
+    images = tf.placeholder(tf.float32, [128, 100, 68, 1])
+    labels = tf.placeholder(tf.int32, [128])
+    hp = None
+    network = WideResNet(hp, images, labels, global_step)
+    
+    network.build_model()
+#    network.build_train_op()
+#
+#    # Summaries(training)
+#    train_summary_op = tf.summary.merge_all()
