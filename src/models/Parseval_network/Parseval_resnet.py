@@ -173,14 +173,9 @@ def create_wide_residual_network(input_dim, nb_classes=100, N=2, k=1, dropout=0.
     return model
 
 if __name__ == "__main__":
-    from tensorflow.keras.utils import plot_model
-    from tensorflow.keras.layers import Input
-    from tensorflow.keras.models import Model
 
     init = (68, 100,1)
 
     wrn_16_2 = create_wide_residual_network(init, nb_classes=4, N=2, k=2, dropout=0.0)
 
     wrn_16_2.summary()
-
-
