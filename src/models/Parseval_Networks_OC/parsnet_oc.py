@@ -5,9 +5,10 @@ from tensorflow.keras.layers import BatchNormalization
 from tensorflow.keras.regularizers import l2
 from tensorflow.keras import backend as K
 import warnings
-import tensorflow
+
 warnings.filterwarnings("ignore")
 weight_decay = 0.0005
+
 
 def initial_conv(input):
   
@@ -110,7 +111,7 @@ def conv3_block(input, k=1, dropout=0.0):
     m = Add()([init, x])
     return m
 
-def create_wide_residual_network(input_dim, nb_classes=100, N=2, k=1, dropout=0.0, verbose=1):
+def create_parseval_network(input_dim, nb_classes=100, N=2, k=1, dropout=0.0, verbose=1):
     """
     Creates a Wide Residual Network with specified parameters
 
@@ -179,8 +180,8 @@ if __name__ == "__main__":
 
     init = (68, 100,1)
 
-    wrn_16_2 = create_wide_residual_network(init, nb_classes=4, N=2, k=2, dropout=0.0)
+    parsnet_16_10 = create_parseval_network(init, nb_classes=4, N=2, k=2, dropout=0.0)
 
-    wrn_16_2.summary()
+    parsnet_16_10.summary()
 
-
+   # plot_model(wrn_28_10, "WRN-16-2.png", show_shapes=True, show_layer_names=True)
