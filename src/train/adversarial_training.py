@@ -15,6 +15,9 @@ class AdversarialTraining(object):
         for epoch in range(0,epochs):
             for j in range(0,step_on_epoch):
                 self.mini_batch_train(model,X_train, Y_train, batch_size)
+            ###TODO###
+            ### add validation test
+
 
     def mini_batch_train(self, model, X_train,Y_train, batch_size):
 
@@ -39,7 +42,7 @@ class AdversarialTraining(object):
         start = np.random.randint(0, N-batch_size)
         return start
 
-    def get_adversarial(self, first_half_end, second_half_end)
+    def get_adversarial(self, first_half_end, second_half_end):
         return self.X_adv[first_half_end:second_half_end,:,:,:], self.Y_adv[first_half_end:second_half_end]
 
     def get_pertubation(self, model_type, X_train, epsilon):

@@ -4,6 +4,7 @@ import numpy as np
 from read_data import read_data
 from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.utils import to_categorical
+from tensorflow.keras import backend as K
 
 
 def preprocessing():
@@ -18,7 +19,7 @@ def preprocessing():
 
 
     # transform data set
-    if K.common.image_data_format() == 'channels_first':
+    if K.image_data_format() == 'channels_first':
         X = X.reshape(X.shape[0], 1, img_rows, img_cols)
         input_shape = (1, img_rows, img_cols)
     else:

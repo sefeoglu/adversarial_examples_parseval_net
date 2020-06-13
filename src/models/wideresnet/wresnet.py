@@ -115,7 +115,7 @@ class WideResidualNetwork(object):
         m = Add()([init, x])
         return m
 
-    def create_wide_residual_network(self,weight_decay, lr, input_dim, nb_classes=100, N=2, k=1, dropout=0.0, verbose=1):
+    def create_wide_residual_network(self,weight_decay, lr, input_dim,momentum, nb_classes=100, N=2, k=1, dropout=0.0, verbose=1):
         """
         Creates a Wide Residual Network with specified parameters
 
@@ -174,7 +174,7 @@ class WideResidualNetwork(object):
         x = Dense(nb_classes, kernel_regularizer=l2(self.weight_decay), activation='softmax')(x)
 
         model = Model(ip, x)
-        sgd = SGD(lr=self.lr, momentum=0.9)
+        sgd = SGD(lr=self.lr, momentum=momentum)
         # model.summary()
         model.compile(loss="categorical_crossentropy", optimizer=sgd, metrics=["acc"])
         if verbose: print("Wide Residual Network-%d-%d created." % (nb_conv, k))
