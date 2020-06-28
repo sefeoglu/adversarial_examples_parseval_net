@@ -182,5 +182,5 @@ class WideResidualNetwork(object):
 
 if __name__ == "__main__":
     wrn = WideResidualNetwork()
-    init = (68, 100,1)
+    init = (32, 32,1)
     model = wrn.create_wide_residual_network(0.0005, 0.1, init, nb_classes=4, N=2, k=2, dropout=0.3)

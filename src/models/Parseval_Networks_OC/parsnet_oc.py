@@ -182,7 +182,7 @@ class ParsevalNetwork(object):
 if __name__ == "__main__":
     parseval = ParsevalNetwork()
 
-    init = (68, 100,1)
+    init = (32, 32,1)
 
-    parsnet_16_10 = parseval.create_parseval_network(0.0005,0.1, init, nb_classes=4, N=2, k=2, dropout=0.0)
+    parsnet_16_2 = parseval.create_parseval_network(0.0005,0.1, init, nb_classes=4, N=2, k=2, dropout=0.0)
 
