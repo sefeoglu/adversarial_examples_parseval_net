@@ -2,8 +2,12 @@
 
 Using adversarial examples, the project aims to improve the robustness and accuracy of a machine learning model which detects the eye-states against small perturbation of an image, and to solve the misclassification problem caused by natural transformation.
 
-* Models:
-```
+### Definition
+
+
+
+#### Models:
+``` bash
 ├── Parseval_network
 │   ├── __init__.py
 │   └── Parseval_resnet.py
@@ -16,3 +20,13 @@ Using adversarial examples, the project aims to improve the robustness and accur
 └── wideresnet
     └── wresnet.py
 ```
+#### Fast Gradient Sign Method
+#### Wide Residual Network
+* Baseline of the Model
+
+#### Parseval Network
+
+* Orthogonality Constraint
+
+
+## References
