@@ -7,6 +7,14 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras import backend as K
 
 def preprocessing_data(data):
+    """[summary]
+
+    Args:
+        data ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """    
     data_X = []
     Y_data = []
     for row in data:
@@ -18,6 +26,14 @@ def preprocessing_data(data):
     return X, Y
 
 def transform_Y(Y):
+    """[summary]
+
+    Args:
+        Y ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """    
     labelencoder = LabelEncoder()
     y_df = pd.DataFrame(Y, columns=['Label'])
     y_df['Encoded'] = labelencoder.fit_transform(y_df['Label'])
@@ -25,6 +41,14 @@ def transform_Y(Y):
     return y_cat
 
 def transform_X(X):
+    """[summary]
+
+    Args:
+        X ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
     img_rows, img_cols = X[0].shape
 
     # transform data set

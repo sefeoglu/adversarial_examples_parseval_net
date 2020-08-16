@@ -10,7 +10,14 @@ warnings.filterwarnings("ignore")
 weight_decay = 0.0005
 
 def initial_conv(input):
-  
+    """[summary]
+
+    Args:
+        input ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """  
     x = Convolution2D(16, (3, 3), padding='same', kernel_initializer='orthogonal',
                       kernel_regularizer=l2(weight_decay),
                       use_bias=False)(input)
@@ -23,6 +30,17 @@ def initial_conv(input):
 
 
 def expand_conv(init, base, k, strides=(1, 1)):
+    """[summary]
+
+    Args:
+        init ([type]): [description]
+        base ([type]): [description]
+        k ([type]): [description]
+        strides (tuple, optional): [description]. Defaults to (1, 1).
+
+    Returns:
+        [type]: [description]
+    """    
     x = Convolution2D(base * k, (3, 3), padding='same', strides=strides, kernel_initializer='Orthogonal', kernel_regularizer=l2(weight_decay),
                       use_bias=False)(init)
 
@@ -45,6 +63,16 @@ def expand_conv(init, base, k, strides=(1, 1)):
 
 
 def conv1_block(input, k=1, dropout=0.0):
+    """[summary]
+
+    Args:
+        input ([type]): [description]
+        k (int, optional): [description]. Defaults to 1.
+        dropout (float, optional): [description]. Defaults to 0.0.
+
+    Returns:
+        [type]: [description]
+    """    
     init = input
 
     channel_axis = 1 if K.image_data_format() == "channels_first" else -1
@@ -67,6 +95,16 @@ def conv1_block(input, k=1, dropout=0.0):
     return m
 
 def conv2_block(input, k=1, dropout=0.0):
+    """[summary]
+
+    Args:
+        input ([type]): [description]
+        k (int, optional): [description]. Defaults to 1.
+        dropout (float, optional): [description]. Defaults to 0.0.
+
+    Returns:
+        [type]: [description]
+    """    
     init = input
 
     channel_axis = 1 if K.image_data_format() == "channels_first" else -1
@@ -89,6 +127,16 @@ def conv2_block(input, k=1, dropout=0.0):
     return m
 
 def conv3_block(input, k=1, dropout=0.0):
+    """[summary]
+
+    Args:
+        input ([type]): [description]
+        k (int, optional): [description]. Defaults to 1.
+        dropout (float, optional): [description]. Defaults to 0.0.
+
+    Returns:
+        [type]: [description]
+    """    
     init = input
 
     channel_axis = 1 if K.image_data_format() == "channels_first" else -1

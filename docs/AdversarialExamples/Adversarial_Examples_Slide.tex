@@ -1,0 +1,139 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This is a very basic template for mathematical presentations using LaTeX and beamer, aimed at University of Edinburgh students on the Honours Analysis course 2017-2018, for their "Skills" presentations.
+%
+% This template is just to get you started and to see what the possibilities are.  There is no required format, and you are free to use, discard, edit as much as you like.  I've put in some mathematical content to demonstrate the very basics of LaTeX.  Clearly, you will need to change this.
+%
+% Except for a few structural comments, I don't comment on the LaTeX itself.  If you have used it before, most of what you know should apply as usual.  If you have not, have a look at the source code, the output, and experiment with editing the code and see what happens.  Most LaTeX code is pretty intuitive, e.g. the command to produce an alpha is \alpha, the command for an integral sign is \int, etc.  You can learn an awful lot by guesswork, trial and error, and google.  
+%
+% The percent signs "%" are comment signs, and instruct LaTeX to ignore everything following the sign on the same line.  They can be used to comment on the code.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% The following lines are the preamble.  They help LaTeX set-up the document, but do not print anything yet.
+
+\documentclass{beamer}		% This tells LaTeX the document will be a "beamer" presentation
+
+\usetheme{Madrid}		% Sets basic formatting.  Lots of options, google "beamer themes"
+
+\usecolortheme{dolphin}	% Sets the colour scheme.  Lots of options, google "beamer color themes"
+
+\setbeamertemplate{navigation symbols}{}	% Manually changes one piece of formatting.  See what the difference is by commenting this line out.
+
+\date{\today}	% Insert the date of your presentation. \today gives an unsurprising automatic date.
+
+\title[Adversarial Examples]{Adversarial Examples\\for Eye-State Classification}	% Insert your title.  Depending on the theme you choose above, a "short title" might be useful, as it will appear on the footer of each slide.
+
+\author[Sefika]{Sefika Efeoglu} % Insert your name
+
+\institute{University of Potsdam} % Self-explanatory
+
+\begin{document} 	% Let's begin
+
+% Presentations come in slide frames.  You have to tell LaTeX when to start a frame, and when to end the frame.  The most common error beginners make with beamer is forgetting the \end{frame} command.	
+
+\begin{frame}	
+
+\titlepage	% Prints a title page populated with the information given in the preamble
+	
+\end{frame}		
+
+
+\begin{frame}{Road Map}	
+\begin{itemize}
+\item Motivation
+\item Problem Setting
+\item State of the Arts
+\item Methodology
+\item Development Tools
+\item Project
+\end{itemize}
+\end{frame}	
+
+\begin{frame}{Usages of Classification}	
+\begin{itemize}
+\item Autonomous Driving
+\item Economy
+\end{itemize}
+\end{frame}	
+
+\begin{frame}{Uniform convergence}	
+
+\begin{definition}	% There are lots of "theorem-like" environments for beamer just as 	usual with LaTeX: definition, theorem, lemma, example, proof, etc...
+
+A sequence of functions $f_n \colon \mathbb{R} \to \mathbb{R}$ \emph{converges uniformly} to a function $f \colon \mathbb{R} \to \mathbb{R}$ if for all $\epsilon > 0$ there exists an $N \in \mathbb{N}$ such that $n \geq N$ implies 
+\[
+\sup_{x \in \mathbb{R}} |f_n(x) - f(x)| < \epsilon.
+\]
+
+\end{definition}
+
+\pause	% Generates a break in the slide presentation
+
+\begin{block}{Pointwise and uniform continuity} % Blocks are a beamer speciality.
+
+\begin{itemize}
+\item Uniform convergence implies pointwise convergence
+\item Pointwise convergence does not imply uniform convergence
+\end{itemize}
+
+\end{block}
+
+\pause
+
+\begin{theorem}
+Let $f_n \colon\mathbb{R} \to \mathbb{R}$ be continuous and converge uniformly to $f \colon \mathbb{R} \to \mathbb{R}$.  Then $f$ is continuous.
+\end{theorem}
+
+\end{frame}
+
+\begin{frame}{Uniform convergence and continuity}
+
+\begin{proof}
+Let $x \in \mathbb{R}$ and let $\epsilon > 0$.  There exists $N \in \mathbb{N}$ such that $n \geq N$ implies
+\begin{equation}
+\label{eq1}
+\sup_{x \in \mathbb{R}} |f_n(x) - f(x)| < \frac{\epsilon}{3}.
+\end{equation}
+
+There exists $\delta > 0$ such that 
+\begin{equation}
+\label{eq2}
+|f_N(x) - f_N(y) | < \frac{\epsilon}{3}\ \mbox{whenever}\ |x-y| < \delta.
+\end{equation}
+
+Then inequalities \eqref{eq1} and \eqref{eq2} imply that whenever $|x-y | < \delta$, we have 
+\begin{align*}
+|f(x) - f(y)| 
+& \leq |f(x) - f_N(x)| + |f_N(x) - f_N(y)| + | f_N(y) - f(y) | \\
+& < \frac{\epsilon}{3} + \frac{\epsilon}{3} + \frac{\epsilon}{3} \\
+& = \epsilon.
+\end{align*} 
+\end{proof}
+
+\end{frame}
+
+\begin{frame}{People}
+
+This subject owes much to 
+
+\begin{columns}	% A handy way of putting things side-by-side
+
+\begin{column}{0.4\textwidth} % this says the column will be the width of 0.4 times the \textwidth
+\begin{figure}	% for graphics
+\includegraphics[height=4cm]{Cauchy}	% save your image file in your project, and include using \includegraphics{filename}.  Specify height, width, scaling as shown.
+\caption{Augustin-Louis Cauchy}	% there are ways to delete the "Figure:" if you want to
+\end{figure}
+\end{column}
+
+\begin{column}{0.4\textwidth}
+\begin{figure}
+\includegraphics[height=4cm]{Weierstrass}
+\caption{Karl Weierstrass}
+\end{figure}
+\end{column}
+
+\end{columns}
+
+\end{frame}
+\end{document}	% Done!

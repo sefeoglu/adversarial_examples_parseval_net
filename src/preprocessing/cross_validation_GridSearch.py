@@ -11,11 +11,28 @@ from models.wideresnet.wresnet import WideResidualNetwork
 from data.preprocessing import preprocessing
 import tensorflow
 class ModelSelection(object):
+    """[summary]
+
+    Args:
+        object ([type]): [description]
+    """    
     def __init__(self):
+        """[summary]
+        """        
         pass
     def KFold_GridSearchCV(self, input_dim, X, Y, X_test, y_test, combinations, filename="log.csv"):
          # create containers for resulting data
-         
+        """[summary]
+
+        Args:
+            input_dim ([type]): [description]
+            X ([type]): [description]
+            Y ([type]): [description]
+            X_test ([type]): [description]
+            y_test ([type]): [description]
+            combinations ([type]): [description]
+            filename (str, optional): [description]. Defaults to "log.csv".
+        """         
         wresnet_ins = WideResidualNetwork()
         res_df = pd.DataFrame(columns=['momentum','learning rate','batch size',
                                       'loss1', 'acc1','loss2', 'acc2','loss3', 'acc3'])

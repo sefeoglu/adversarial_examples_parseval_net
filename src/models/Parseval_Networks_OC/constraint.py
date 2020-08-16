@@ -2,6 +2,7 @@ from tensorflow.python.keras.constraints import Constraint
 from tensorflow.python.ops import math_ops, array_ops
 
 class TightFrame(Constraint):
+    
     """
     Parseval (tight) frame contstraint, as introduced in https://arxiv.org/abs/1704.08847
 
@@ -23,6 +24,15 @@ class TightFrame(Constraint):
 
 
     def __init__(self, scale, num_passes=1):
+        """[summary]
+
+        Args:
+            scale ([type]): [description]
+            num_passes (int, optional): [description]. Defaults to 1.
+
+        Raises:
+            ValueError: [description]
+        """        
         self.scale = scale
 
         if num_passes < 1:
@@ -31,6 +41,14 @@ class TightFrame(Constraint):
 
 
     def __call__(self, w):
+        """[summary]
+
+        Args:
+            w ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """        
         transpose_channels = (len(w.shape) == 4)
 
         # Move channels_num to the front in order to make the dimensions correct for matmul
@@ -54,7 +72,7 @@ class TightFrame(Constraint):
             return last
 
 
-    def get_config(self):
+    def get_config(self):   
         return {'scale': self.scale, 'num_passes': self.num_passes}
 
 

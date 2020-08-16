@@ -13,9 +13,18 @@ warnings.filterwarnings("ignore")
 
 class ParsevalNetwork(object):
     def __init__(self):
+        """[summary]
+        """        
         pass
     def initial_conv(self, input):
-    
+        """[summary]
+
+        Args:
+            input ([type]): [description]
+
+        Returns:
+            [type]: [description]
+        """        
         x = Convolution2D(16, (3, 3), padding='same', kernel_initializer='orthogonal',
                         kernel_regularizer=l2(self.weight_decay), kernel_constraint=tight_frame(0.001),
                         use_bias=False)(input)
@@ -28,6 +37,17 @@ class ParsevalNetwork(object):
 
 
     def expand_conv(self, init, base, k, strides=(1, 1)):
+        """[summary]
+
+        Args:
+            init ([type]): [description]
+            base ([type]): [description]
+            k ([type]): [description]
+            strides (tuple, optional): [description]. Defaults to (1, 1).
+
+        Returns:
+            [type]: [description]
+        """        
         x = Convolution2D(base * k, (3, 3), padding='same', strides=strides, kernel_initializer='Orthogonal', kernel_regularizer=l2(self.weight_decay),kernel_constraint=tight_frame(0.001),
                         use_bias=False)(init)
 
@@ -50,6 +70,16 @@ class ParsevalNetwork(object):
 
 
     def conv1_block(self, input, k=1, dropout=0.0):
+        """[summary]
+
+        Args:
+            input ([type]): [description]
+            k (int, optional): [description]. Defaults to 1.
+            dropout (float, optional): [description]. Defaults to 0.0.
+
+        Returns:
+            [type]: [description]
+        """        
         init = input
 
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
@@ -72,6 +102,16 @@ class ParsevalNetwork(object):
         return m
 
     def conv2_block(self, input, k=1, dropout=0.0):
+        """[summary]
+
+        Args:
+            input ([type]): [description]
+            k (int, optional): [description]. Defaults to 1.
+            dropout (float, optional): [description]. Defaults to 0.0.
+
+        Returns:
+            [type]: [description]
+        """        
         init = input
 
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
