@@ -1,4 +1,4 @@
-## Using Adversarial Examples, to Improve the Robustness of Eye-State Classification :eyes:
+## Using Adversarial Examples, to improve the robustness of Eye-State Classification :eyes:
 
 ### Aim:
 
