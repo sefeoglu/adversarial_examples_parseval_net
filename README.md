@@ -81,4 +81,4 @@ References
 
 Sefika Efeoglu
 
-Data Science MSc, University of Potsdam, SS 2020
+Research Project, Data Science MSc, University of Potsdam, SS 2020
