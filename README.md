@@ -47,6 +47,7 @@ Using adversarial examples, the project aims to improve the robustness and accur
 References
 ============
 [1] Cisse, Bojanowski, Grave, Dauphin and Usunier, Parseval Networks: Improving Robustness to Adversarial Examples, 2017.
+
 [2] Zagoruyko and Komodakis, Wide Residual Networks, 2016.
 
 ```
