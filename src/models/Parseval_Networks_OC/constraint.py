@@ -1,8 +1,8 @@
 from tensorflow.python.keras.constraints import Constraint
 from tensorflow.python.ops import math_ops, array_ops
 
+
 class TightFrame(Constraint):
-    
     """
     Parseval (tight) frame contstraint, as introduced in https://arxiv.org/abs/1704.08847
 
@@ -21,8 +21,6 @@ class TightFrame(Constraint):
     Returns:
         Weight matrix after applying regularizer.
     """
-
-
     def __init__(self, scale, num_passes=1):
         """[summary]
 
@@ -32,13 +30,14 @@ class TightFrame(Constraint):
 
         Raises:
             ValueError: [description]
-        """        
+        """
         self.scale = scale
 
         if num_passes < 1:
-            raise ValueError("Number of passes cannot be non-positive! (got {})".format(num_passes))
+            raise ValueError(
+                "Number of passes cannot be non-positive! (got {})".format(
+                    num_passes))
         self.num_passes = num_passes
-
 
     def __call__(self, w):
         """[summary]
@@ -48,7 +47,7 @@ class TightFrame(Constraint):
 
         Returns:
             [type]: [description]
-        """        
+        """
         transpose_channels = (len(w.shape) == 4)
 
         # Move channels_num to the front in order to make the dimensions correct for matmul
@@ -61,7 +60,9 @@ class TightFrame(Constraint):
         last = w_reordered
         for i in range(self.num_passes):
             temp1 = math_ops.matmul(last, last, transpose_a=True)
-            temp2 = (1 + self.scale) * w_reordered - self.scale * math_ops.matmul(w_reordered, temp1)
+            temp2 = (1 +
+                     self.scale) * w_reordered - self.scale * math_ops.matmul(
+                         w_reordered, temp1)
 
             last = temp2
 
@@ -71,8 +72,7 @@ class TightFrame(Constraint):
         else:
             return last
 
-
-    def get_config(self):   
+    def get_config(self):
         return {'scale': self.scale, 'num_passes': self.num_passes}
 
 

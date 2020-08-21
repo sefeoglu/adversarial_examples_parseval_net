@@ -6,6 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras import backend as K
 
+
 def preprocessing_data(data):
     """[summary]
 
@@ -14,16 +15,17 @@ def preprocessing_data(data):
 
     Returns:
         [type]: [description]
-    """    
+    """
     data_X = []
     Y_data = []
     for row in data:
-        data_X.append(cv2.resize(row['crop'], (32,32)))
+        data_X.append(cv2.resize(row['crop'], (32, 32)))
         Y_data.append(row['label'])
     data_X = np.array(data_X)
     X = transform_X(data_X.astype('float32'))
     Y = transform_Y(Y_data)
     return X, Y
+
 
 def transform_Y(Y):
     """[summary]
@@ -33,12 +35,13 @@ def transform_Y(Y):
 
     Returns:
         [type]: [description]
-    """    
+    """
     labelencoder = LabelEncoder()
     y_df = pd.DataFrame(Y, columns=['Label'])
     y_df['Encoded'] = labelencoder.fit_transform(y_df['Label'])
     y_cat = to_categorical(y_df['Encoded'])
     return y_cat
+
 
 def transform_X(X):
     """[summary]
