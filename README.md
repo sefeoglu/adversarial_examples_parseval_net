@@ -1,6 +1,6 @@
 ## Using Adversarial Examples, to improve the robustness of Eye-State Classification :eyes:
 
-### Aim:
+### Aim
 
 Using adversarial examples, the project aims to improve the robustness and accuracy of a machine learning model which detects the eye-states against small perturbation of an image, and to solve the misclassification problem caused by natural transformation.
 
@@ -10,7 +10,7 @@ The safe control between vehicle and driver is a significant prerequisite for au
 With respect to our dataset, images of eyes consist of various  eye-states which are labelled as open, partially open, closed, and not visible. Natural transformations like angle of input images, viewpoints might lead to misclassification problem in machine learning model. The machine learning model has sensitive measurement to decide the eye-states, so small perturbation of an image fools the deep learning model.
 
 
-### Methodologies:
+### Methodologies
 
 * Develop Wide Residual Network and Parseval Network 
 * Train Neural Networks using training dataset
