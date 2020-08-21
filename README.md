@@ -63,7 +63,7 @@ References
 
 ```
 
-@paper{ParsevalNetworks,
+@misc{ParsevalNetworks,
   author= "Moustapha Cisse, Piotr Bojanowski, Edouard Grave, Yann Dauphin, Nicolas Usunier"
   title="Parseval Networks: Improving Robustness to Adversarial Examples"
   year= "2017"
@@ -71,7 +71,7 @@ References
 ```
 
 ```
-@paper{Wide Residual Networks
+@misc{Wide Residual Networks
   author= "Sergey Zagoruyko, Nikos Komodakis"
   title= "Wide Residual Networks"
   year= "2016"
