@@ -21,26 +21,22 @@ class WideResidualNetwork(object):
                  k=1,
                  dropout=0.0,
                  verbose=1):
-        """[summary]
+        """[Assign the initial parameters of the wide residual network]
 
         Args:
-            weight_decay ([type]): [description]
-            lr ([type]): [description]
-            input_dim ([type]): [description]
-            momentum ([type]): [description]
-            nb_classes (int, optional): [description]. Defaults to 100.
-            N (int, optional): [description]. Defaults to 2.
-            k (int, optional): [description]. Defaults to 1.
-            dropout (float, optional): [description]. Defaults to 0.0.
+            weight_decay ([float]): [description]
+            input_dim ([tuple]): [input dimension]
+            nb_classes (int, optional): [output class]. Defaults to 100.
+            N (int, optional): [the number of blocks]. Defaults to 2.
+            k (int, optional): [network width]. Defaults to 1.
+            dropout (float, optional): [dropout value to prevent overfitting]. Defaults to 0.0.
             verbose (int, optional): [description]. Defaults to 1.
 
         Returns:
             [Model]: [wideresnet]
         """
         self.weight_decay = weight_decay
-        self.learning_rate = lr
         self.input_dim = input_dim
-        self.momentum = momentum
         self.nb_classes = nb_classes
         self.N = N
         self.k = k
@@ -246,7 +242,7 @@ class WideResidualNetwork(object):
 
 
         Returns:
-            [type]: [description]
+            [Model]: [wide residual network]
         """
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
 
@@ -302,17 +298,16 @@ class WideResidualNetwork(object):
                   activation='softmax')(x)
 
         model = Model(ip, x)
-        sgd = SGD(lr=self.learning_rate, momentum=self.momentum)
-        # model.summary()
-        model.compile(loss="categorical_crossentropy",
-                      optimizer=sgd,
-                      metrics=["acc"])
+
         if self.verbose:
             print("Wide Residual Network-%d-%d created." % (nb_conv, self.k))
         return model
 
 
 if __name__ == "__main__":
+    
+    init = (32, 32, 1)
+
     wrn = WideResidualNetwork(0.0005,
                               0.1,
                               init,
@@ -321,6 +316,5 @@ if __name__ == "__main__":
                               N=2,
                               k=2,
                               dropout=0.3)
-    init = (32, 32, 1)
+    
     model = wrn.create_wide_residual_network()
-    model.summary()
