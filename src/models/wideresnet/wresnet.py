@@ -13,7 +13,6 @@ warnings.filterwarnings("ignore")
 class WideResidualNetwork(object):
     def __init__(self,
                  weight_decay,
-                 lr,
                  input_dim,
                  momentum,
                  nb_classes=100,
