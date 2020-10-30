@@ -15,7 +15,14 @@ from wresnet import WideResidualNetwork
 
 class AdversarialTraining(object):
     """Adversarial Training  """
+    def __init__(self, model, pretrained_model, hyperparameters):
+        # model
+        # pretrained_model
+        # hyperparameters
         self.model = model
+        self.pretrained_model = pretrained_model
+        self.batch_size = 
+
         self.generator = tensorflow.keras.preprocessing.image.ImageDataGenerator(
             rotation_range=10,
             width_shift_range=5. / 32,
