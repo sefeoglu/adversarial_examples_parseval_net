@@ -16,6 +16,8 @@ from wresnet import WideResidualNetwork
 class AdversarialTraining(object):
     """Adversarial Training  """
     def __init__(self):
+        """
+        """        
         self.batch_size = 64
 
         self.generator = tensorflow.keras.preprocessing.image.ImageDataGenerator(
@@ -24,8 +26,9 @@ class AdversarialTraining(object):
             height_shift_range= 5. / 32,
         )
 
+
     def train(self, X_train, Y_train, X_test, y_test, epochs,
-              BS, epsilon_list, sgd):
+              BS, epsilon_list, sgd, callbacks_list):
         # init dimensions
         init = (32, 32, 1)
         # rotate the images to improve the acc.
