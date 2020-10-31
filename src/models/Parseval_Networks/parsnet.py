@@ -7,7 +7,7 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.optimizers import SGD
 import warnings
 from constraint import tight_frame
-
+from convexity_constraint import convex_add
 warnings.filterwarnings("ignore")
 
 
@@ -85,7 +85,7 @@ class ParsevalNetwork(object):
                              kernel_constraint=tight_frame(0.001),
                              use_bias=False)(init)
 
-        m = Add()([x, skip])
+        m = convex_add(init, skip, initial_convex_par=0.5, trainable=True)
 
         return m
 
@@ -129,8 +129,7 @@ class ParsevalNetwork(object):
                           kernel_regularizer=l2(self.weight_decay),
                           kernel_constraint=tight_frame(0.001),
                           use_bias=False)(x)
-
-        m = Add()([init, x])
+        m = convex_add(init, x, initial_convex_par=0.5, trainable=True)
         return m
 
     def conv2_block(self, input, k=1, dropout=0.0):
@@ -173,7 +172,7 @@ class ParsevalNetwork(object):
                           kernel_constraint=tight_frame(0.001),
                           use_bias=False)(x)
 
-        m = Add()([init, x])
+        m = convex_add(init, x, initial_convex_par=0.5, trainable=True)
         return m
 
     def conv3_block(self, input, k=1, dropout=0.0):
@@ -206,33 +205,13 @@ class ParsevalNetwork(object):
                           kernel_regularizer=l2(self.weight_decay),
                           use_bias=False)(x)
 
-        m = Add()([init, x])
+        m = convex_add(init, x, initial_convex_par=0.5, trainable=True)
         return m
 
-    def create_parseval_network(self,
-                                weight_decay=0.0005,
-                                learning_rate=0.1,
-                                input_dim,
-                                nb_classes=100,
-                                N=2,
-                                k=1,
-                                dropout=0.0,
-                                verbose=1):
-        """
-        Creates a Wide Residual Network with specified parameters
-
-        :param input: Input Keras object
-        :param nb_classes: Number of output classes
-        :param N: Depth of the network. Compute N = (n - 4) / 6.
-                Example : For a depth of 16, n = 16, N = (16 - 4) / 6 = 2
-                Example2: For a depth of 28, n = 28, N = (28 - 4) / 6 = 4
-                Example3: For a depth of 40, n = 40, N = (40 - 4) / 6 = 6
-        :param k: Width of the network.
-        :param dropout: Adds dropout if value is greater than 0.0
-        :param verbose: Debug info to describe created WRN
-        :return:
-        """
-        self.weight_decay = weight_decay
+    def create_parseval_network(self, weight_decay=0.0005, learning_rate=0.1,
+		input_dim,nb_classes=100, N=2, k=1, dropout=0.0, verbose=1):
+		
+    	self.weight_decay = weight_decay
         self.learning_rate = learning_rate
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
 
