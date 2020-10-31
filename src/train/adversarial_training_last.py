@@ -10,8 +10,8 @@ from cleverhans.future.tf2.attacks import fast_gradient_method
 from absl import flags
 
 FLAGS = flags.FLAGS
-flags.DEFINE_integer('nb_epochs', 200, 'Number of epochs.')
-flags.DEFINE_float('eps', 0.05, 'Total epsilon for FGM and PGD attacks.')
+flags.DEFINE_integer('nb_epochs', 50, 'Number of epochs.')
+flags.DEFINE_float('eps', 0.05, 'Total epsilon for FGM.')
 def adversarial_train(base_model, X_train, y_train, X_test, y_test):
     loss_object = tf.losses.CategoricalCrossentropy(from_logits=True)
     optimizer = tf.optimizers.SGD(learning_rate=0.01)
@@ -46,7 +46,7 @@ def adversarial_train(base_model, X_train, y_train, X_test, y_test):
       y_pred = base_model(x)
       test_acc_clean(y, y_pred)
 
-      x_fgsm = fast_gradient_method(base_mode(l, x, eps=FLAGS.eps, np.inf)
+      x_fgsm = fast_gradient_method(base_model, x,FLAGS.eps, np.inf)
       y_pred_fgsm = base_model(x_fgsm)
       test_acc_fgsm(y, y_pred_fgsm)
 
