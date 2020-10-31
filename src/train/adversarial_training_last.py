@@ -1,20 +1,34 @@
-pip install -qq -e git+http://github.com/tensorflow/cleverhans.git#egg=cleverhans
+#pip install -qq -e git+http://github.com/tensorflow/cleverhans.git#egg=cleverhans
+
 import sys
-sys.path.append('/content/src/cleverhans')
-import cleverhans
+#sys.path.append('/content/src/cleverhans')
+#import cleverhans
 
 import numpy as np
 import math
 import tensorflow as tf
-from cleverhans.future.tf2.attacks import fast_gradient_method
+
 from absl import flags
+sys.path.insert(1,'/home/sefika/AE_Parseval_Network/src/cleverhans/future/tf2/attacks')
+from cleverhans.future.tf2.attacks import fast_gradient_method
+
 
 FLAGS = flags.FLAGS
 flags.DEFINE_integer('nb_epochs', 50, 'Number of epochs.')
 flags.DEFINE_float('eps', 0.05, 'Total epsilon for FGM.')
 def adversarial_train(base_model, X_train, y_train, X_test, y_test):
+    """ the method is trained the base_model using adversarial examples of the training data which
+    are obtained by fast gradient sign method
+
+    Args:
+        base_model : basic neural network model 
+        X_train : Training data input (32X32 matrix shows an image)
+        y_train : training data output(1X4 vector as label)
+        X_test : test data input
+        y_test : test data output
+    """
     loss_object = tf.losses.CategoricalCrossentropy(from_logits=True)
-    optimizer = tf.optimizers.SGD(learning_rate=0.01)
+    optimizer = tf.optimizers.SGD(learning_rate=0.1)
 
 
     # Metrics to track the different accuracies
@@ -36,13 +50,15 @@ def adversarial_train(base_model, X_train, y_train, X_test, y_test):
     for epoch in range(FLAGS.nb_epochs):
       # keras like display of process
       progress_bar_train = tf.keras.utils.Progbar(50000)
-      for (x,y) in data.train:
+      data_train = zip(X_train, y_train)
+      data_test = zip(X_test, y_test)
+      for (x,y) in zip(*data_train):
         x = fast_gradient_method(base_model, x, FLAGS.eps,np.inf)
         train_step(x,y)
         progress_bar_train.add(x.shape[0], values=[('loss', train_loss.result())])
     #Evaluate on clean and adversarial data
     progress_bar_test = tf.keras.utils.Progbar(10000)
-    for x, y in data_test:
+    for x, y in zip(*data_test):
       y_pred = base_model(x)
       test_acc_clean(y, y_pred)
 
