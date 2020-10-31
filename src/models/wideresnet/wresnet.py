@@ -308,7 +308,6 @@ if __name__ == "__main__":
     init = (32, 32, 1)
 
     wrn = WideResidualNetwork(0.0005,
-                              0.1,
                               init,
                               0.9,
                               nb_classes=4,

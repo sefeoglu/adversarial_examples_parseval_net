@@ -1,20 +1,29 @@
 from tensorflow.keras.callbacks import LearningRateScheduler
+# Define configuration parameters
+import math
+def step_decay(epoch):
+    """[summary]
 
-def lr_sch(epoch):
-
-    """ Helper funtion to use different learning rate on the different number of the epochs
+    Args:
+        epoch (int): epoch number
 
     Returns:
-        [type]: [description]
-    """    
-    if epoch < 60:
-        return 0.1
-    elif epoch < 120:
-        return 0.02
-    elif epoch < 160:
-        return 0.004
+        float: new learning rate
+    """
+    initial_lrate = 0.1
+    factor = 0.1
+    if epoch < 10:
+      lrate = initial_lrate
+    elif epoch < 20:
+      lrate = initial_lrate*math.pow(factor, 1)
+    elif epoch < 30:
+      lrate = initial_lrate*math.pow(factor, 2)
+    elif epoch < 40 :
+      lrate = initial_lrate*math.pow(factor, 3)
     else:
-        return 0.0008
+      lrate = initial_lrate*math.pow(factor, 4)
+    return lrate
 
-# Learning rate scheduler callback
-lr_scheduler = LearningRateScheduler(lr_sch)
+
+
+lrate = LearningRateScheduler(step_decay)

@@ -7,8 +7,8 @@ from sklearn.model_selection import KFold
 import sys
 import tensorflow
 import tensorflow as tf
-#sys.path.insert(1,'/home/sefika/AE_Parseval_Network/src/models')
-#from wideresnet.wresnet import WideResidualNetwork
+sys.path.insert(1,'/home/sefika/AE_Parseval_Network/src/models')
+from wideresnet.wresnet import WideResidualNetwork
 
 from wresnet import WideResidualNetwork
 
@@ -16,13 +16,15 @@ from wresnet import WideResidualNetwork
 class AdversarialTraining(object):
     """Adversarial Training  """
     def __init__(self):
+        self.batch_size = 64
+
         self.generator = tensorflow.keras.preprocessing.image.ImageDataGenerator(
-            rotation_range=10,
-            width_shift_range=5. / 32,
-            height_shift_range=5. / 32,
+            rotation_range= 10,
+            width_shift_range= 5. / 32,
+            height_shift_range= 5. / 32,
         )
 
-    def train(self, pretrained_model, X_train, Y_train, X_test, y_test, epochs,
+    def train(self, X_train, Y_train, X_test, y_test, epochs,
               BS, epsilon_list, sgd):
         # init dimensions
         init = (32, 32, 1)
@@ -35,50 +37,47 @@ class AdversarialTraining(object):
         # Ten fold cross validation
 
         kfold = KFold(n_splits=10, random_state=42, shuffle=False)
-
+        wresnet_ins = WideResidualNetwork(0.0001, init,0.9, nb_classes=4, N=2, k=1, dropout=0.0)
         for j, (train, val) in enumerate(kfold.split(X_train)):
-
+            
+            wrn_16_1 = wresnet_ins.create_wide_residual_network()
+            wrn_16_1.compile(loss="categorical_crossentropy", optimizer=sgd, metrics=["acc"])
+            print("Finished compiling")
             x_train, y_train = self.data_augmentation(X_train[train],
                                                       Y_train[train], BS,
-                                                      pretrained_model,
+                                                      wrn_16_1,
                                                       epsilon_list)
             x_val, y_val = self.data_augmentation(X_train[val], Y_train[val],
-                                                  BS, pretrained_model,
+                                                  BS, wrn_16_1,
                                                   epsilon_list)
-            model = WideResidualNetwork.create_wide_residual_network(
-                0.0001, 0.01, init, 0.9, nb_classes=4, N=2, k=2, dropout=0.0)
 
-            model.compile(loss="categorical_crossentropy",
-                          optimizer=sgd,
-                          metrics=["acc"])
-
-            hist = model.fit(
+            hist = wrn_16_1.fit(
                 self.generator.flow(x_train, y_train, batch_size=BS),
                 steps_per_epoch=len(x_train) // BS,
-                epochs=epochs,
+                epochs=50, callbacks = callbacks_list,
                 validation_data=(x_val, y_val),
                 validation_steps=x_val.shape[0] // BS,
             )
-            loss, acc = model.evaluate(X_test, y_test)
+            loss, acc = wrn_16_1.evaluate(X_test, y_test)
 
             loss1, acc1 = self.print_test(
-                model,
-                self.get_adversarial_examples(pretrained_model, X_test, y_test,
+                wrn_16_1,
+                self.get_adversarial_examples(wrn_16_1, X_test, y_test,
                                               epsilon_list[0]), X_test, y_test,
                 epsilon_list[0])
             loss2, acc2 = self.print_test(
-                model,
-                self.get_adversarial_examples(pretrained_model, X_test, y_test,
+                wrn_16_1,
+                self.get_adversarial_examples(wrn_16_1, X_test, y_test,
                                               epsilon_list[1]), X_test, y_test,
                 epsilon_list[1])
             loss3, acc3 = self.print_test(
-                model,
-                self.get_adversarial_examples(pretrained_model, X_test, y_test,
+                wrn_16_1,
+                self.get_adversarial_examples(wrn_16_1, X_test, y_test,
                                               epsilon_list[2]), X_test, y_test,
                 epsilon_list[2])
             loss4, acc4 = self.print_test(
-                model,
-                self.get_adversarial_examples(pretrained_model, X_test, y_test,
+                wrn_16_1,
+                self.get_adversarial_examples(wrn_16_1, X_test, y_test,
                                               epsilon_list[3]), X_test, y_test,
                 epsilon_list[3])
             # store the loss and accuracy
@@ -98,20 +97,8 @@ class AdversarialTraining(object):
 
         return res_df
 
-    def mini_batch_train(self, model, X_train, y_train, x_val, y_val, BS,
-                         pretrained_model, epsilon):
-
-        hist = model.fit(self.generator.flow(X_train, y_train, batch_size=BS),
-                         steps_per_epoch=len(X_train) // BS,
-                         epochs=1,
-                         validation_data=(x_val, y_val),
-                         validation_steps=x_val.shape[0] // BS,
-                         shuffle=True)
-
     def data_augmentation(self, X_train, Y_train, batch_size, pretrained_model,
                           epsilon_list):
-        ### divide data 16,16,16,16 for 4 different epsilons and 64 is true image. ###
-        #start_index = self.data_iteration(X_train, batch_size)
         first_half_end = int(len(X_train) / 2)
         second_half_end = int(len(X_train))
         x_clean = X_train[0:first_half_end, :, :, :]
@@ -123,10 +110,6 @@ class AdversarialTraining(object):
 
         return x_mix, y_mix
 
-    def data_iteration(self, X_train, batch_size):
-        N = X_train.shape[0]
-        start = np.random.randint(0, N - batch_size)
-        return start
 
     def merge_data(self, x_clean, x_adv):
         x_mix = []

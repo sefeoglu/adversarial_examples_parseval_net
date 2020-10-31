@@ -2,13 +2,13 @@
 
 ### Aim
 
-Using adversarial examples, the project aims to improve the robustness and accuracy of a machine learning model which detects the eye-states against small perturbation of an image, and to solve the misclassification problem caused by natural transformation.
+Using adversarial examples, the project aims to improve the robustness and accuracy of a machine learning model which detects the eye-states against small perturbation of an image and to solve the misclassification problem caused by natural transformation.
 
 ### Motivation and Problem Setting
 
-The safe control between vehicle and driver is a significant prerequisite for automated driving whether the driver is able to take a control can be evaluated using eye state detection. It is important that such systems are robust against changing real world conditions like lighting and natural transformation. These real world conditions, which might not be aware of human, lead to fool a machine learning or deep learning model. Deep neural networks which the kind of machine learning models that have recently result in dramatic performance improvements in a wide range of applications are vulnerable to tiny perturbations of their inputs (images). This leads to misclassification problem, namely error in the accuracy of the model. Adversarial examples are specialised inputs created with the purpose of confusing a neural network, resulting in the misclassification of a given input.These notorious inputs are indistinguishable to the human eye, but cause the network to fail to identify the contents of the image. Additionally, the aim of adversal examples is to disturbed the well trained machine learning model. However, small adversarial perturbation should not result in a significant impact on the out of the model for a trained and robust machine learning model. Consequently, generating adversarial perturbation as negative training examples can improve the robustness of the model.
-With respect to our dataset, images of eyes consist of various  eye-states which are labelled as open, partially open, closed, and not visible. Natural transformations like angle of input images, viewpoints might lead to misclassification problem in machine learning model. The machine learning model has sensitive measurement to decide the eye-states, so small perturbation of an image fools the deep learning model.
+The safe control between vehicle and driver is a significant prerequisite for automated driving whether the driver is able to take control can be evaluated using eye state detection. It is important that such systems are robust against changing real-world conditions like lighting and natural transformation. These real-world conditions, which might not be aware of humans, lead to fooling a machine learning or deep learning model. Deep neural networks which are the kind of machine learning models that have recently resulted in dramatic performance improvements in a wide range of applications are vulnerable to tiny perturbations of their inputs (images). This leads to misclassification problems, namely error in the accuracy of the model. Adversarial examples are specialized inputs created with the purpose of confusing a neural network, resulting in the misclassification of a given input. These notorious inputs are indistinguishable to the human eye, but cause the network to fail to identify the contents of the image. Additionally, the aim of adversarial examples is to disturbed the well-trained machine learning model.  However, small adversarial perturbation should not result in a significant impact on the out of the model for a trained and robust machine learning model. Consequently, generating adversarial perturbation as negative training examples can improve the robustness of the model.
 
+Concerning our dataset, images of eyes consist of various eye-states which are labeled as open, partially open, closed, and not visible. Natural transformations like the angle of input images, viewpoints might lead to misclassification problems in machine learning models. The machine learning model has sensitive measurement to decide the eye-states, so a small perturbation of an image fools the deep learning model.
 
 ### Methodologies
 
@@ -29,7 +29,6 @@ With respect to our dataset, images of eyes consist of various  eye-states which
 * Orthogonality Constraint
 * Lipschitz constant
 
-
 #### Adversarial Examples
 
 ##### Fast Gradient Sign Method
@@ -40,8 +39,8 @@ With respect to our dataset, images of eyes consist of various  eye-states which
 
 ## Development 
 
-
 #### Models:
+
 ``` bash
 ├── Parseval_network
 │   ├── __init__.py
@@ -55,13 +54,14 @@ With respect to our dataset, images of eyes consist of various  eye-states which
 └── wideresnet
     └── wresnet.py
 ```
+
 References
 ============
 [1] Cisse, Bojanowski, Grave, Dauphin and Usunier, Parseval Networks: Improving Robustness to Adversarial Examples, 2017.
 
 [2] Zagoruyko and Komodakis, Wide Residual Networks, 2016.
 
-```
+``` 
 
 @misc{ParsevalNetworks,
   author= "Moustapha Cisse, Piotr Bojanowski, Edouard Grave, Yann Dauphin, Nicolas Usunier"
@@ -70,13 +70,15 @@ References
 }
 ```
 
-```
+``` 
+
 @misc{Wide Residual Networks
   author= "Sergey Zagoruyko, Nikos Komodakis"
   title= "Wide Residual Networks"
   year= "2016"
 }
 ```
+
 ### Author
 
 Sefika Efeoglu
