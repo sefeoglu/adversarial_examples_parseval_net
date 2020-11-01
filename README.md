@@ -62,6 +62,9 @@ Concerning our dataset, images of eyes consist of various eye-states which are l
 └── Prediction.ipynb
 
 ```
+
+### Result:
+![Alt text](src/logs/images/SNR.png?raw=true "Title")
 #### Documentation:
 * [Final Presentation](documents/slide/)
 * [Final Report](documents/)
