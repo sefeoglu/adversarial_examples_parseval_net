@@ -57,9 +57,11 @@ Concerning our dataset, images of eyes consist of various eye-states which are l
 ```
 #### Analysis:
 ``` bash
+├── Adversarial_Images.ipynb
 ├── BasicDeepNetworkResults_Visualization.ipynb
 ├── LearningCurves.ipynb
-└── Prediction.ipynb
+├── Prediction.ipynb
+└── SignalToNoiseRatio.ipynb
 
 ```
 
