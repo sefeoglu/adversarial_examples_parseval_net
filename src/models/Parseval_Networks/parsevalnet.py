@@ -10,13 +10,37 @@ from constraint import tight_frame
 from convexity_constraint import convex_add
 warnings.filterwarnings("ignore")
 
-
 class ParsevalNetwork(object):
-    def __init__(self):
-        """[summary]
-        """
-        pass
+    def __init__(self,
+                 input_dim,
+                 weight_decay,
+                 momentum,
+                 nb_classes=100,
+                 N=2,
+                 k=1,
+                 dropout=0.0,
+                 verbose=1):
+        """[Assign the initial parameters of the wide residual network]
 
+        Args:
+            weight_decay ([float]): [description]
+            input_dim ([tuple]): [input dimension]
+            nb_classes (int, optional): [output class]. Defaults to 100.
+            N (int, optional): [the number of blocks]. Defaults to 2.
+            k (int, optional): [network width]. Defaults to 1.
+            dropout (float, optional): [dropout value to prevent overfitting]. Defaults to 0.0.
+            verbose (int, optional): [description]. Defaults to 1.
+
+        Returns:
+            [Model]: [wideresnet]
+        """
+        self.weight_decay = weight_decay
+        self.input_dim = input_dim
+        self.nb_classes = nb_classes
+        self.N = N
+        self.k = k
+        self.dropout = dropout
+        self.verbose = verbose
     def initial_conv(self, input):
         """[summary]
 
@@ -85,7 +109,7 @@ class ParsevalNetwork(object):
                              kernel_constraint=tight_frame(0.001),
                              use_bias=False)(init)
 
-        m = convex_add(init, skip, initial_convex_par=0.5, trainable=True)
+        m = Add()([x, skip])
 
         return m
 
@@ -207,24 +231,26 @@ class ParsevalNetwork(object):
 
         m = convex_add(init, x, initial_convex_par=0.5, trainable=True)
         return m
+        
+    def create_wide_residual_network(self):
+        """create a wide residual network model
 
-    def create_parseval_network(self, weight_decay=0.0005, learning_rate=0.1,
-		input_dim,nb_classes=100, N=2, k=1, dropout=0.0, verbose=1):
-		
-    	self.weight_decay = weight_decay
-        self.learning_rate = learning_rate
+
+        Returns:
+            [Model]: [wide residual network]
+        """
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
 
-        ip = Input(shape=input_dim)
+        ip = Input(shape=self.input_dim)
 
         x = self.initial_conv(ip)
         nb_conv = 4
 
-        x = self.expand_conv(x, 16, k)
+        x = self.expand_conv(x, 16, self.k)
         nb_conv += 2
 
-        for i in range(N - 1):
-            x = self.conv1_block(x, k, dropout)
+        for i in range(self.N - 1):
+            x = self.conv1_block(x, self.k, self.dropout)
             nb_conv += 2
 
         x = BatchNormalization(axis=channel_axis,
@@ -233,11 +259,11 @@ class ParsevalNetwork(object):
                                gamma_initializer='uniform')(x)
         x = Activation('relu')(x)
 
-        x = self.expand_conv(x, 32, k, strides=(2, 2))
+        x = self.expand_conv(x, 32, self.k, strides=(2, 2))
         nb_conv += 2
 
-        for i in range(N - 1):
-            x = self.conv2_block(x, k, dropout)
+        for i in range(self.N - 1):
+            x = self.conv2_block(x, self.k, self.dropout)
             nb_conv += 2
 
         x = BatchNormalization(axis=channel_axis,
@@ -246,11 +272,11 @@ class ParsevalNetwork(object):
                                gamma_initializer='uniform')(x)
         x = Activation('relu')(x)
 
-        x = self.expand_conv(x, 64, k, strides=(2, 2))
+        x = self.expand_conv(x, 64, self.k, strides=(2, 2))
         nb_conv += 2
 
-        for i in range(N - 1):
-            x = self.conv3_block(x, k, dropout)
+        for i in range(self.N - 1):
+            x = self.conv3_block(x, self.k, self.dropout)
             nb_conv += 2
 
         x = BatchNormalization(axis=channel_axis,
@@ -262,30 +288,26 @@ class ParsevalNetwork(object):
         x = AveragePooling2D((8, 8))(x)
         x = Flatten()(x)
 
-        x = Dense(nb_classes,
+        x = Dense(self.nb_classes,
                   kernel_regularizer=l2(self.weight_decay),
                   activation='softmax')(x)
 
         model = Model(ip, x)
-        sgd = SGD(lr=self.learning_rate, momentum=0.9)
-        # model.summary()
-        model.compile(loss="categorical_crossentropy",
-                      optimizer=sgd,
-                      metrics=["acc"])
-        if verbose:
-            print("Parseval Residual Network-%d-%d created." % (nb_conv, k))
+
+        if self.verbose:
+            print("Parseval  Network-%d-%d created." % (nb_conv, self.k))
         return model
 
 
 if __name__ == "__main__":
-    parseval = ParsevalNetwork()
-
+    
     init = (32, 32, 1)
 
-    parsnet_16_2 = parseval.create_parseval_network(0.0005,
-                                                    0.1,
-                                                    init,
-                                                    nb_classes=4,
-                                                    N=2,
-                                                    k=2,
-                                                    dropout=0.0)
+    parseval = ParsevalNetwork(init, 0.0005,
+                              0.9,
+                              nb_classes=4,
+                              N=2,
+                              k=2,
+                              dropout=0.3)
+    
+    model = parseval.create_wide_residual_network()

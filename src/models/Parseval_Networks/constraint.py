@@ -52,7 +52,7 @@ class TightFrame(Constraint):
 
         # Move channels_num to the front in order to make the dimensions correct for matmul
         if transpose_channels:
-            w_reordered = array_ops.reshape(w, (-1, w.shape[3].value))
+            w_reordered = array_ops.reshape(w, (-1, w.shape[3]))
 
         else:
             w_reordered = w

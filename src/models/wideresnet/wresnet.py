@@ -12,8 +12,8 @@ warnings.filterwarnings("ignore")
 
 class WideResidualNetwork(object):
     def __init__(self,
-                 weight_decay,
                  input_dim,
+                 weight_decay,
                  momentum,
                  nb_classes=100,
                  N=2,
@@ -303,12 +303,12 @@ class WideResidualNetwork(object):
         return model
 
 
+
 if __name__ == "__main__":
     
     init = (32, 32, 1)
 
-    wrn = WideResidualNetwork(0.0005,
-                              init,
+    wrn = WideResidualNetwork(init, 0.0005,
                               0.9,
                               nb_classes=4,
                               N=2,
