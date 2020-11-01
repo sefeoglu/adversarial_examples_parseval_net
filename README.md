@@ -42,19 +42,25 @@ Concerning our dataset, images of eyes consist of various eye-states which are l
 #### Models:
 
 ``` bash
-├── Parseval_network
-│   ├── __init__.py
-│   └── Parseval_resnet.py
-├── Parseval_Networks_OC
+
+├── Parseval_Networks
 │   ├── constraint.py
-│   ├── parsnet_oc.py
+│   ├── convexity_constraint.py
+│   ├── parsevalnet.py
 │   └── README.md
 ├── README.md
 ├── _utility.py
 └── wideresnet
     └── wresnet.py
-```
 
+```
+#### Analysis:
+``` bash
+├── BasicDeepNetworkResults_Visualization.ipynb
+├── LearningCurves.ipynb
+└── Prediction.ipynb
+
+```
 References
 ============
 [1] Cisse, Bojanowski, Grave, Dauphin and Usunier, Parseval Networks: Improving Robustness to Adversarial Examples, 2017.
