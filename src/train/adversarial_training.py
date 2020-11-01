@@ -27,7 +27,7 @@ class AdversarialTraining(object):
         )
 
 
-    def train(self, X_train, Y_train, X_test, y_test, epochs,
+    def train(self, instance, X_train, Y_train, X_test, y_test, epochs,
               BS, epsilon_list, sgd, callbacks_list):
         # init dimensions
         init = (32, 32, 1)
@@ -40,47 +40,47 @@ class AdversarialTraining(object):
         # Ten fold cross validation
 
         kfold = KFold(n_splits=10, random_state=42, shuffle=False)
-        wresnet_ins = WideResidualNetwork(0.0001, init,0.9, nb_classes=4, N=2, k=1, dropout=0.0)
+
         for j, (train, val) in enumerate(kfold.split(X_train)):
             
-            wrn_16_1 = wresnet_ins.create_wide_residual_network()
-            wrn_16_1.compile(loss="categorical_crossentropy", optimizer=sgd, metrics=["acc"])
+            model = instance.create_wide_residual_network()
+            model.compile(loss="categorical_crossentropy", optimizer=sgd, metrics=["acc"])
             print("Finished compiling")
             x_train, y_train = self.data_augmentation(X_train[train],
                                                       Y_train[train], BS,
-                                                      wrn_16_1,
+                                                      model,
                                                       epsilon_list)
             x_val, y_val = self.data_augmentation(X_train[val], Y_train[val],
-                                                  BS, wrn_16_1,
+                                                  BS, model,
                                                   epsilon_list)
 
-            hist = wrn_16_1.fit(
+            hist = model.fit(
                 self.generator.flow(x_train, y_train, batch_size=BS),
                 steps_per_epoch=len(x_train) // BS,
                 epochs=50, callbacks = callbacks_list,
                 validation_data=(x_val, y_val),
                 validation_steps=x_val.shape[0] // BS,
             )
-            loss, acc = wrn_16_1.evaluate(X_test, y_test)
+            loss, acc = model.evaluate(X_test, y_test)
 
             loss1, acc1 = self.print_test(
-                wrn_16_1,
-                self.get_adversarial_examples(wrn_16_1, X_test, y_test,
+                model,
+                self.get_adversarial_examples(model, X_test, y_test,
                                               epsilon_list[0]), X_test, y_test,
                 epsilon_list[0])
             loss2, acc2 = self.print_test(
-                wrn_16_1,
-                self.get_adversarial_examples(wrn_16_1, X_test, y_test,
+                model,
+                self.get_adversarial_examples(model, X_test, y_test,
                                               epsilon_list[1]), X_test, y_test,
                 epsilon_list[1])
             loss3, acc3 = self.print_test(
-                wrn_16_1,
-                self.get_adversarial_examples(wrn_16_1, X_test, y_test,
+                model,
+                self.get_adversarial_examples(model, X_test, y_test,
                                               epsilon_list[2]), X_test, y_test,
                 epsilon_list[2])
             loss4, acc4 = self.print_test(
-                wrn_16_1,
-                self.get_adversarial_examples(wrn_16_1, X_test, y_test,
+                model,
+                self.get_adversarial_examples(model, X_test, y_test,
                                               epsilon_list[3]), X_test, y_test,
                 epsilon_list[3])
             # store the loss and accuracy

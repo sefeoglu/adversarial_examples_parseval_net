@@ -1,6 +1,0 @@
-{
-    "python.pythonPath": "/home/sefika/anaconda3/bin/python",
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true,
-    "python.dataScience.jupyterServerURI": "local"
-}
