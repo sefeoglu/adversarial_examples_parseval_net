@@ -26,8 +26,8 @@ Concerning our dataset, images of eyes consist of various eye-states which are l
 
 #### Parseval Network
 
-* Orthogonality Constraint
-* Lipschitz constant
+* [Orthogonality Constraint](/src/models/Parseval_Networks/constraint.py)
+* [Convexity Constraint on Aggregation](/src/models/Parseval_Networks/convexity_constraint.py)
 
 #### Adversarial Examples
 
@@ -61,6 +61,10 @@ Concerning our dataset, images of eyes consist of various eye-states which are l
 └── Prediction.ipynb
 
 ```
+#### Documentation:
+* [Final Presentation](documents/slide/)
+* [Final Report](documents/)
+
 References
 ============
 [1] Cisse, Bojanowski, Grave, Dauphin and Usunier, Parseval Networks: Improving Robustness to Adversarial Examples, 2017.
