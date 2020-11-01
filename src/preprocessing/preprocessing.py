@@ -16,34 +16,39 @@ def preprocessing_data(data):
     Returns:
         [type]: [description]
     """
-    data_X = []
-    Y_data = []
+    x_input = []
+    y_input = []
+
     for row in data:
-        data_X.append(cv2.resize(row['crop'], (32, 32)))
-        Y_data.append(row['label'])
-    data_X = np.array(data_X)
-    X = transform_X(data_X.astype('float32'))
-    Y = transform_Y(Y_data)
-    return X, Y
+        x_input.append(cv2.resize(row['crop'], (32, 32)))
+        y_input.append(row['label'])
+
+    x_input = np.array(x_input)
+
+    transformed_x = transform_imput(x_input.astype('float32'))
+
+    transformed_y = transform_output(y_input)
+    return transformed_x, transformed_y
 
 
-def transform_Y(Y):
+
+def transform_output(output):
     """[summary]
 
     Args:
-        Y ([type]): [description]
+        output ([type]): [description]
 
     Returns:
         [type]: [description]
     """
     labelencoder = LabelEncoder()
-    y_df = pd.DataFrame(Y, columns=['Label'])
+    y_df = pd.DataFrame(output, columns=['Label'])
     y_df['Encoded'] = labelencoder.fit_transform(y_df['Label'])
     y_cat = to_categorical(y_df['Encoded'])
     return y_cat
 
 
-def transform_X(X):
+def transform_imput(x_input):
     """[summary]
 
     Args:
@@ -52,13 +57,11 @@ def transform_X(X):
     Returns:
         [type]: [description]
     """
-    img_rows, img_cols = X[0].shape
+    img_rows, img_cols = x_input[0].shape
 
     # transform data set
     if K.image_data_format() == 'channels_first':
-        X = X.reshape(X.shape[0], 1, img_rows, img_cols)
-        input_shape = (1, img_rows, img_cols)
+        x_input = x_input.reshape(x_input.shape[0], 1, img_rows, img_cols)
     else:
-        X = X.reshape(X.shape[0], img_rows, img_cols, 1)
-        input_shape = (img_rows, img_cols, 1)
-    return X
+        x_input = x_input.reshape(x_input.shape[0], img_rows, img_cols, 1)
+    return x_input

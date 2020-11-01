@@ -6,11 +6,11 @@ from tensorflow.keras.regularizers import l2
 from tensorflow.keras import backend as K
 from tensorflow.keras.optimizers import SGD
 import warnings
-
+from constraint import tight_frame
+from convexity_constraint import convex_add
 warnings.filterwarnings("ignore")
 
-
-class WideResidualNetwork(object):
+class ParsevalNetwork(object):
     def __init__(self,
                  input_dim,
                  weight_decay,
@@ -41,7 +41,6 @@ class WideResidualNetwork(object):
         self.k = k
         self.dropout = dropout
         self.verbose = verbose
-
     def initial_conv(self, input):
         """[summary]
 
@@ -53,8 +52,9 @@ class WideResidualNetwork(object):
         """
         x = Convolution2D(16, (3, 3),
                           padding='same',
-                          kernel_initializer='he_normal',
+                          kernel_initializer='orthogonal',
                           kernel_regularizer=l2(self.weight_decay),
+                          kernel_constraint=tight_frame(0.001),
                           use_bias=False)(input)
 
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
@@ -81,8 +81,9 @@ class WideResidualNetwork(object):
         x = Convolution2D(base * k, (3, 3),
                           padding='same',
                           strides=strides,
-                          kernel_initializer='he_normal',
+                          kernel_initializer='Orthogonal',
                           kernel_regularizer=l2(self.weight_decay),
+                          kernel_constraint=tight_frame(0.001),
                           use_bias=False)(init)
 
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
@@ -95,15 +96,17 @@ class WideResidualNetwork(object):
 
         x = Convolution2D(base * k, (3, 3),
                           padding='same',
-                          kernel_initializer='he_normal',
+                          kernel_initializer='Orthogonal',
                           kernel_regularizer=l2(self.weight_decay),
+                          kernel_constraint=tight_frame(0.001),
                           use_bias=False)(x)
 
         skip = Convolution2D(base * k, (1, 1),
                              padding='same',
                              strides=strides,
-                             kernel_initializer='he_normal',
+                             kernel_initializer='Orthogonal',
                              kernel_regularizer=l2(self.weight_decay),
+                             kernel_constraint=tight_frame(0.001),
                              use_bias=False)(init)
 
         m = Add()([x, skip])
@@ -132,8 +135,9 @@ class WideResidualNetwork(object):
         x = Activation('relu')(x)
         x = Convolution2D(16 * k, (3, 3),
                           padding='same',
-                          kernel_initializer='he_normal',
+                          kernel_initializer='Orthogonal',
                           kernel_regularizer=l2(self.weight_decay),
+                          kernel_constraint=tight_frame(0.001),
                           use_bias=False)(x)
 
         if dropout > 0.0: x = Dropout(dropout)(x)
@@ -145,11 +149,11 @@ class WideResidualNetwork(object):
         x = Activation('relu')(x)
         x = Convolution2D(16 * k, (3, 3),
                           padding='same',
-                          kernel_initializer='he_normal',
+                          kernel_initializer='Orthogonal',
                           kernel_regularizer=l2(self.weight_decay),
+                          kernel_constraint=tight_frame(0.001),
                           use_bias=False)(x)
-
-        m = Add()([init, x])
+        m = convex_add(init, x, initial_convex_par=0.5, trainable=True)
         return m
 
     def conv2_block(self, input, k=1, dropout=0.0):
@@ -166,7 +170,6 @@ class WideResidualNetwork(object):
         init = input
 
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
-        print("conv2:channel:  {}".format(channel_axis))
         x = BatchNormalization(axis=channel_axis,
                                momentum=0.1,
                                epsilon=1e-5,
@@ -174,8 +177,9 @@ class WideResidualNetwork(object):
         x = Activation('relu')(x)
         x = Convolution2D(32 * k, (3, 3),
                           padding='same',
-                          kernel_initializer='he_normal',
+                          kernel_initializer='Orthogonal',
                           kernel_regularizer=l2(self.weight_decay),
+                          kernel_constraint=tight_frame(0.001),
                           use_bias=False)(x)
 
         if dropout > 0.0: x = Dropout(dropout)(x)
@@ -187,28 +191,18 @@ class WideResidualNetwork(object):
         x = Activation('relu')(x)
         x = Convolution2D(32 * k, (3, 3),
                           padding='same',
-                          kernel_initializer='he_normal',
+                          kernel_initializer='Orthogonal',
                           kernel_regularizer=l2(self.weight_decay),
+                          kernel_constraint=tight_frame(0.001),
                           use_bias=False)(x)
 
-        m = Add()([init, x])
+        m = convex_add(init, x, initial_convex_par=0.5, trainable=True)
         return m
 
     def conv3_block(self, input, k=1, dropout=0.0):
-        """[summary]
-
-        Args:
-            input ([type]): [description]
-            k (int, optional): [description]. Defaults to 1.
-            dropout (float, optional): [description]. Defaults to 0.0.
-
-        Returns:
-            [type]: [description]
-        """
         init = input
 
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
-
         x = BatchNormalization(axis=channel_axis,
                                momentum=0.1,
                                epsilon=1e-5,
@@ -216,7 +210,8 @@ class WideResidualNetwork(object):
         x = Activation('relu')(x)
         x = Convolution2D(64 * k, (3, 3),
                           padding='same',
-                          kernel_initializer='he_normal',
+                          kernel_initializer='Orthogonal',
+                          kernel_constraint=tight_frame(0.001),
                           kernel_regularizer=l2(self.weight_decay),
                           use_bias=False)(x)
 
@@ -229,13 +224,14 @@ class WideResidualNetwork(object):
         x = Activation('relu')(x)
         x = Convolution2D(64 * k, (3, 3),
                           padding='same',
-                          kernel_initializer='he_normal',
+                          kernel_initializer='Orthogonal',
+                          kernel_constraint=tight_frame(0.001),
                           kernel_regularizer=l2(self.weight_decay),
                           use_bias=False)(x)
 
-        m = Add()([init, x])
+        m = convex_add(init, x, initial_convex_par=0.5, trainable=True)
         return m
-
+        
     def create_wide_residual_network(self):
         """create a wide residual network model
 
@@ -299,20 +295,19 @@ class WideResidualNetwork(object):
         model = Model(ip, x)
 
         if self.verbose:
-            print("Wide Residual Network-%d-%d created." % (nb_conv, self.k))
+            print("Parseval  Network-%d-%d created." % (nb_conv, self.k))
         return model
-
 
 
 if __name__ == "__main__":
     
     init = (32, 32, 1)
 
-    wrn = WideResidualNetwork(init, 0.0005,
+    parseval = ParsevalNetwork(init, 0.0005,
                               0.9,
                               nb_classes=4,
                               N=2,
                               k=2,
                               dropout=0.3)
     
-    model = wrn.create_wide_residual_network()
+    model = parseval.create_wide_residual_network()
