@@ -67,6 +67,10 @@ Concerning our dataset, images of eyes consist of various eye-states which are l
 
 ### Result:
 ![Alt text](src/logs/images/SNR.png?raw=true "Signal to Noise Ratio Results of the model")
+
+
+![Alt text](src/logs/images/compare_parseval_res.png?raw=true "Compare ResNet with Parseval")
+
 #### Documentation:
 * [Final Presentation](documents/slide/)
 * [Final Report](documents/)
