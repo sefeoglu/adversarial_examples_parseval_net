@@ -30,7 +30,7 @@ class AdversarialTraining(object):
         )
 
     def train(self,
-              instance,
+              instance,premodel,
               X_train,
               Y_train,
               X_test,
@@ -70,10 +70,10 @@ class AdversarialTraining(object):
             print("Finished compiling")
             print(epsilon_list)
             x_train, y_train = self.data_augmentation(X_train[train],
-                                                      Y_train[train], model,
+                                                      Y_train[train], premodel,
                                                       epsilon_list)
             x_val, y_val = self.data_augmentation(X_train[val], Y_train[val],
-                                                  model, epsilon_list)
+                                                  premodel, epsilon_list)
 
             hist = model.fit(
                 self.generator.flow(x_train,
@@ -93,17 +93,17 @@ class AdversarialTraining(object):
 
             loss, acc = model.evaluate(X_test, y_test)
 
-            loss1, acc1 = print_test(model,get_adversarial_examples(model, X_test, y_test,
+            loss1, acc1 = print_test(premodel,get_adversarial_examples(model, X_test, y_test,
                                                                     epsilon_list[0]),
                                      X_test, y_test, epsilon_list[0])
-            loss2, acc2 = print_test(model, get_adversarial_examples(model, X_test, y_test,
+            loss2, acc2 = print_test(premodel, get_adversarial_examples(model, X_test, y_test,
                                                                      epsilon_list[1]),
                                      X_test, y_test, epsilon_list[1])
-            loss3, acc3 = print_test(model,
+            loss3, acc3 = print_test(premodel,
                                      get_adversarial_examples(model, X_test, y_test,
                                                               epsilon_list[2]),
                                      X_test, y_test, epsilon_list[2])
-            loss4, acc4 = print_test(model, get_adversarial_examples(model, X_test, y_test,
+            loss4, acc4 = print_test(premodel, get_adversarial_examples(model, X_test, y_test,
                                                                      epsilon_list[3]),
                                      X_test, y_test,epsilon_list[3])
             # store the loss and accuracy

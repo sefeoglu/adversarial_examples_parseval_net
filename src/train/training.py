@@ -10,7 +10,7 @@ from _utility import print_test, get_adversarial_examples
 
 import pickle
 
-def train(instance, X_train, Y_train, X_test, y_test, epochs,
+def train(instance, premodel, X_train, Y_train, X_test, y_test, epochs,
     BS, sgd, generator, callbacks_list, epsilon_list, model_name="ResNet"):
     """[summary]
 
@@ -54,20 +54,20 @@ def train(instance, X_train, Y_train, X_test, y_test, epochs,
           pickle.dump(hist.history, file_pi)
         loss, acc = model.evaluate(X_test, y_test)
 
-        loss1, acc1 = print_test(model,
-                                 get_adversarial_examples(model, X_test, y_test,
+        loss1, acc1 = print_test(premodel,
+                                 get_adversarial_examples(premodel, X_test, y_test,
                                                           epsilon_list[0]), X_test, y_test,
                                  epsilon_list[0])
-        loss2, acc2 = print_test(model,
-                                 get_adversarial_examples(model, X_test, y_test,
+        loss2, acc2 = print_test(premodel,
+                                 get_adversarial_examples(premodel, X_test, y_test,
                                                           epsilon_list[1]), X_test, y_test,
                                  epsilon_list[1])
-        loss3, acc3 = print_test(model,
-                                 get_adversarial_examples(model, X_test, y_test,
+        loss3, acc3 = print_test(premodel,
+                                 get_adversarial_examples(premodel, X_test, y_test,
                                                           epsilon_list[2]), X_test, y_test,
                                  epsilon_list[2])
-        loss4, acc4 = print_test(model,
-                                 get_adversarial_examples(model, X_test, y_test,
+        loss4, acc4 = print_test(premodel,
+                                 get_adversarial_examples(premodel, X_test, y_test,
                                                           epsilon_list[3]), X_test, y_test,
                                  epsilon_list[3])
             # store the loss and accuracy
