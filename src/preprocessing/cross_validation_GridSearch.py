@@ -46,7 +46,6 @@ class ModelSelection(object):
             metrics_dict = {}
   
             for j, (train_index, test_index) in enumerate(kf.split(X)):
-               if i >95:
                 X_train, X_val = X[train_index], X[test_index]
                 y_train, y_val = Y[train_index], Y[test_index]
                 model = wresnet_ins.create_wide_residual_network(combination[2], combination[0], input_dim,combination[4], nb_classes=4, N=2, k=2, dropout=0.0)
@@ -55,17 +54,16 @@ class ModelSelection(object):
                                     validation_steps=len(X_val) // combination[1],)
                 loss, acc = model.evaluate(X_test, y_test)
                 metrics_dict[j+1] = {"loss": loss, "acc": acc, "epoch_stopped": combination[3]}
-            if i > 95:
-              row = {'momentum': combination[4],'learning rate': combination[0],
-                        'batch size': combination[1], 'reg_penalty': combination[2],
-                        'epoch_stopped1': metrics_dict[1]["epoch_stopped"], 
-                        'loss1': metrics_dict[1]["loss"],'acc1': metrics_dict[1]["acc"],
-                        'acc1': metrics_dict[1]["acc"],'epoch_stopped2': metrics_dict[2]["epoch_stopped"],
-                        'loss2': metrics_dict[2]["loss"],'acc2': metrics_dict[2]["acc"],
-                        'epoch_stopped3': metrics_dict[3]["epoch_stopped"],
-                        'loss3': metrics_dict[3]["loss"], 'acc3': metrics_dict[3]["acc"]}
-              res_df = res_df.append(row , ignore_index=True)
-              res_df.to_csv(filename, sep=";")
+            row = {'momentum': combination[4],'learning rate': combination[0],
+                    'batch size': combination[1], 'reg_penalty': combination[2],
+                    'epoch_stopped1': metrics_dict[1]["epoch_stopped"], 
+                    'loss1': metrics_dict[1]["loss"],'acc1': metrics_dict[1]["acc"],
+                    'acc1': metrics_dict[1]["acc"],'epoch_stopped2': metrics_dict[2]["epoch_stopped"],
+                    'loss2': metrics_dict[2]["loss"],'acc2': metrics_dict[2]["acc"],
+                    'epoch_stopped3': metrics_dict[3]["epoch_stopped"],
+                    'loss3': metrics_dict[3]["loss"], 'acc3': metrics_dict[3]["acc"]}
+            res_df = res_df.append(row , ignore_index=True)
+            res_df.to_csv(filename, sep=";")
 
 if __name__ == "__main__":
 
