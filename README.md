@@ -68,6 +68,7 @@ Using adversarial examples, the project aims to improve the robustness and accur
 #### Documentation:
 * [Final Presentation](documents/slide/) --wip
 * [Final Report](documents/)    -- wip
+* [Detailed Expose](documents/Expose) (Accesible)
 
 References
 ============
