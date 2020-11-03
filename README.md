@@ -10,6 +10,7 @@ Using adversarial examples, the project aims to improve the robustness and accur
 * Generate Adversarial Examples from pre-training neural networks using Fast Gradient Sign Method
 * Augmenting training data with adversarial examples
 * Train new model.
+* Attack the new model with different perturbated test data.
 
 ### Neural Network Models
 
@@ -65,8 +66,8 @@ Using adversarial examples, the project aims to improve the robustness and accur
 ![Alt text](src/logs/images/compare_parseval_res.png?raw=true "Compare ResNet with Parseval")
 
 #### Documentation:
-* [Final Presentation](documents/slide/)
-* [Final Report](documents/)
+* [Final Presentation](documents/slide/) --wip
+* [Final Report](documents/)    -- wip
 
 References
 ============
