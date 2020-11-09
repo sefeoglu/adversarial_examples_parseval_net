@@ -66,7 +66,7 @@ Using adversarial examples, the project aims to improve the robustness and accur
 ![Alt text](src/logs/images/compare_parseval_res.png?raw=true "Compare ResNet with Parseval")
 
 #### Documentation:
-* [Final Presentation](documents/slide/) --wip
+* [Final Presentation](documents/slide/)
 * [Final Report](documents/)    -- wip
 * [Detailed Expose](documents/Expose) (Accesible)
 
