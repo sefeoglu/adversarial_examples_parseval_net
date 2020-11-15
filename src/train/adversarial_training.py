@@ -69,23 +69,22 @@ class AdversarialTraining(object):
                           metrics=["acc"])
             print("Finished compiling")
             print(epsilon_list)
-            x_train, y_train = self.data_augmentation(X_train[train],
-                                                      Y_train[train], premodel,
-                                                      epsilon_list)
-            x_val, y_val = self.data_augmentation(X_train[val], Y_train[val],
-                                                  premodel, epsilon_list)
+            x_train, y_train = X_train[train],Y_train[train]
+            x_val, y_val = X_train[val], Y_train[val]
+            train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
+            train_dataset = train_dataset.batch(self.batch_size)
+            val_dataset = tf.data.Dataset.from_tensor_slices((x_val, y_val))
+            val_dataset = val_dataset.batch(self.batch_size)
 
-            hist = model.fit(
-                self.generator.flow(x_train,
-                                    y_train,
-                                    batch_size=self.batch_size),
-                steps_per_epoch=len(x_train) // self.batch_size,
-                epochs=self.epochs,
-                callbacks=callbacks_list,
-                validation_data=(x_val, y_val),
-                validation_steps=x_val.shape[0] // self.batch_size,
-            )
+            for epoch in range(self.epochs):
 
+                for step, (x_train, y_train) in enumerate(train_dataset):
+                    x_train = self.data_augmentation(x_train, y_train, model, epsilon_list)
+                    hst = model.fit(self.generator.flow(x_train, y_train, self.batch_size), batch_size=self.batch_size)
+                
+                for step, (x_val, y_val) in enumerate(val_dataset):
+                    x_val = self.data_augmentation(x_val, y_val, model, epsilon_list)
+                    hst = model.evaluate(x_val, y_val)
             with open(
                     'history_adv_'
                     + model_name + str(j), 'wb') as file_pi:
@@ -166,69 +165,28 @@ class AdversarialTraining(object):
         return x_mix
 
     def get_adversarial(self, logits_model, X_true, y_true, epsilon_list):
-        """[summary]
-
-        Args:
-            logits_model ([type]): [description]
-            X_true ([type]): [description]
-            y_true ([type]): [description]
-            epsilon_list ([type]): [description]
-
-        Returns:
-            [type]: [description]
-        """
-
         return self.adversarial_example(logits_model, X_true, y_true,
                                         epsilon_list)
 
-    def adversarial_example(self, logits_model, X_true, Y_true, epsilon_list):
-        """[summary]
-
-        Args:
-            logits_model ([type]): [description]
-            X_true ([type]): [description]
-            Y_true ([type]): [description]
-            epsilon_list ([type]): [description]
-
-        Returns:
-            [type]: [description]
-        """
-        size = len(X_true)
+    def adversarial_example(self, logits_model, X_true, y_true, epsilon_list):
         X_adv = []
-        interval = int(size / 4)
-        index_list = [0, interval, interval * 2, interval * 3, size]
-        index = 0
 
-        for epsilon in epsilon_list:
-
-            if index == 4:
-                break
-
-            x_true = X_true[index_list[index]:index_list[index + 1], :, :, :]
-            y_true = Y_true[index_list[index]:index_list[index + 1]]
-
-            index = index + 1
-
-            for i in range(len(x_true)):
-
-                random_index = i
-                original_image = x_true[random_index]
-                original_image = tf.convert_to_tensor(
-                    original_image.reshape((1, 32, 32))
-                )  #The .reshape just gives it the proper form to input into the model, a batch of 1 a.k.a a tensor
-                original_label = y_true[random_index]
-                original_label = np.reshape(np.argmax(original_label),
-                                            (1, )).astype('int64')
-                adv_example_targeted_label = fast_gradient_method(
-                    logits_model,
-                    original_image,
-                    epsilon,
-                    np.inf,
-                    y=original_label,
-                    targeted=False)
-                X_adv.append(
-                    np.array(adv_example_targeted_label).reshape(32, 32, 1))
-
+        for index, x_true  in enumerate(X_true):
+            epsilon = epsilon_list[index]
+          
+            original_image = x_true
+            original_image = tf.reshape(original_image, (1, 32, 32))
+            original_label = y_true[index]
+            original_label = np.reshape(np.argmax(original_label),
+                                      (1, )).astype('int64')
+            adv_example_targeted_label = fast_gradient_method(
+                logits_model,
+                original_image,
+                epsilon,
+                np.inf,
+                y=original_label,
+                targeted=False)
+            X_adv.append(
+                np.array(adv_example_targeted_label).reshape(32, 32, 1))
         X_adv = np.array(X_adv)
         return X_adv
-  
