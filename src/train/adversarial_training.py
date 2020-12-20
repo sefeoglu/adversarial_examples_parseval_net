@@ -8,8 +8,9 @@ import tensorflow as tf
 from multiprocessing import Pool
 
 from _utility import lrate, get_adversarial_examples, print_test, step_decay
-
+import hickle as hkl
 import pickle
+model_name="ResNet_da"
 class AdversarialTraining(object):
     """
     The class provides an adversarial training for a given model and epsilon values.
@@ -109,10 +110,7 @@ class AdversarialTraining(object):
 
         return X_adv
 def simulate_train(s):
-    
-    kfold = KFold(n_splits=10, random_state=42, shuffle=False)
-    model_name="ResNet_da"
-
+   
     for j, (train, val) in enumerate(kfold.split(X_train)):
         if j == s :
             print(s)
@@ -130,7 +128,21 @@ def simulate_train(s):
             adversarial_training.train(model, train_dataset, val_dataset, epsilons)
             name = model_name+"_"+str(j)+".h5"
             model.save_weights(name)
+            
 if __name__ == "__main__":
+    data = hkl.load("data.hkl")
+    X_train, X_test, Y_train, y_test = data['xtrain'], data['xtest'], data['ytrain'], data['ytest']
+    epsilons = [i/1000 for i in range(1,33)] # factor for fast gradient sign method
+    
+    kfold = KFold(n_splits=10, random_state=42, shuffle=False)
+    EPOCHS = 50
+    BS = 64
+    init = (32, 32,1)
+    sgd = SGD(lr=0.1, momentum=0.9)
+    parameter = {'epochs': EPOCHS, 'batch_size': BS, 'optimizer': sgd}
+    #change here depending on your model
+    wideresnet = WideResidualNetwork(init, 0.0001, 0.9, nb_classes=4, N=2, k=1, dropout=0.0)
+
     with Pool(10) as p:
         print(p.map(f, np.range(10)))
 
