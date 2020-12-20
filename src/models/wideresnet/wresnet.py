@@ -9,7 +9,6 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-
 class WideResidualNetwork(object):
     def __init__(self,
                  input_dim,

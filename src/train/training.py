@@ -9,30 +9,10 @@ import tensorflow as tf
 from _utility import print_test, get_adversarial_examples
 
 import pickle
+folder_name = "./adversarial_examples_parseval_net/src/logs/saved_models/"
 
-def train(instance, premodel, X_train, Y_train, X_test, y_test, epochs,
-    BS, sgd, generator, callbacks_list, epsilon_list, model_name="ResNet"):
-    """[summary]
-
-    Args:
-        instance ([type]): [description]
-        X_train ([type]): [description]
-        Y_train ([type]): [description]
-        X_test ([type]): [description]
-        y_test ([type]): [description]
-        epochs ([type]): [description]
-        BS ([type]): [description]
-        sgd ([type]): [description]
-        generator ([type]): [description]
-        callbacks_list ([type]): [description]
-        model_name (str, optional): [description]. Defaults to "ResNet".
-
-    Returns:
-        [type]: [description]
-    """    
-
-    res_df = pd.DataFrame(columns=["loss_clean","acc_clean","0.003_loss","0.003_acc","0.005_loss","0.005_acc","0.02_acc","0.02_loss", "0.01_acc","0.01_clean"])
-
+def train(instance, X_train, Y_train, X_test, y_test, epochs,
+BS, sgd, generator, callbacks_list, model_name="ResNet"):
 
     kfold = KFold(n_splits=10, random_state=42, shuffle=False)
     for j, (train, val) in enumerate(kfold.split(X_train)):
@@ -51,38 +31,6 @@ def train(instance, premodel, X_train, Y_train, X_test, y_test, epochs,
             )
                 ## write the history
         with open('history_'+model_name+str(j), 'wb') as file_pi:
-          pickle.dump(hist.history, file_pi)
-        loss, acc = model.evaluate(X_test, y_test)
-
-        loss1, acc1 = print_test(premodel,
-                                 get_adversarial_examples(premodel, X_test, y_test,
-                                                          epsilon_list[0]), X_test, y_test,
-                                 epsilon_list[0])
-        loss2, acc2 = print_test(premodel,
-                                 get_adversarial_examples(premodel, X_test, y_test,
-                                                          epsilon_list[1]), X_test, y_test,
-                                 epsilon_list[1])
-        loss3, acc3 = print_test(premodel,
-                                 get_adversarial_examples(premodel, X_test, y_test,
-                                                          epsilon_list[2]), X_test, y_test,
-                                 epsilon_list[2])
-        loss4, acc4 = print_test(premodel,
-                                 get_adversarial_examples(premodel, X_test, y_test,
-                                                          epsilon_list[3]), X_test, y_test,
-                                 epsilon_list[3])
-            # store the loss and accuracy
-            
-        row = {"loss_clean":loss,
-               "acc_clean":acc,
-               "0.003_loss":loss1,
-               "0.003_acc":acc1,
-               "0.005_loss":loss2,
-               "0.005_acc":acc2,
-               "0.02_acc":acc3,
-               "0.02_loss":loss3,
-               "0.01_acc":acc4,
-               "0.01_loss":acc4
-               }
-        res_df = res_df.append(row, ignore_index=True)
-
-    return res_df
+            pickle.dump(hist.history, file_pi)
+        model_name = folder_name+model_name+"_"+str(j)+".h5"
+        model.save(model_name)

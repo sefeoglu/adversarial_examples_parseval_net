@@ -10,7 +10,7 @@ from constraint import tight_frame
 from convexity_constraint import convex_add
 warnings.filterwarnings("ignore")
 
-class ParsevalNetwork(object):
+class ParsevalNetwork(Model):
     def __init__(self,
                  input_dim,
                  weight_decay,

@@ -5,134 +5,51 @@ from sklearn.model_selection import KFold
 import sys
 import tensorflow
 import tensorflow as tf
-#sys.path.insert(1, '/home/sefika/AE_Parseval_Network/src/models')
+from multiprocessing import Pool
 
-
-from _utility import print_test, get_adversarial_examples
+from _utility import lrate, get_adversarial_examples, print_test, step_decay
 
 import pickle
-
 class AdversarialTraining(object):
-    """[summary]
-
-    Args:
-        object ([type]): [description]
+    """
+    The class provides an adversarial training for a given model and epsilon values.
+    In addition to this, the class changes the half of the batch with their adversarial examples.
+    The adversarial exaples obtain using fast gradient sign method of CleverHans framework.
     """
     def __init__(self, parameter):
         self.epochs = parameter['epochs']
         self.batch_size = parameter['batch_size']
         self.optimizer = parameter['optimizer']
 
-        self.generator = tensorflow.keras.preprocessing.image.ImageDataGenerator(
+        self.generator = tf.keras.preprocessing.image.ImageDataGenerator(
             rotation_range=10,
             width_shift_range=5. / 32,
             height_shift_range=5. / 32,
         )
 
-    def train(self,
-              instance,premodel,
-              X_train,
-              Y_train,
-              X_test,
-              y_test,
-              epsilon_list,
-              callbacks_list,
-              model_name="ResNet"):
-        """[summary]
+    def train(self, model, train_dataset, val_dataset, epsilon_list):
 
-        Args:
-            instance ([type]): [description]
-            X_train ([type]): [description]
-            Y_train ([type]): [description]
-            X_test ([type]): [description]
-            y_test ([type]): [description]
-            epsilon_list ([type]): [description]
-            callbacks_list ([type]): [description]
-            model_name (str, optional): [description]. Defaults to "ResNet".
-
-        Returns:
-            [type]: [description]
-        """
-
-        res_df = pd.DataFrame(columns=["loss_clean","acc_clean","0.003_loss",
-                                       "0.003_acc","0.005_loss","0.005_acc",
-                                       "0.02_acc","0.02_loss", "0.01_acc","0.01_loss"])
         # Ten fold cross validation
+        for epoch in range(self.epochs):
+          lr_rate = step_decay(epoch)
+          tf.keras.backend.set_value(model.optimizer.learning_rate, lr_rate)
 
-        kfold = KFold(n_splits=10, random_state=42, shuffle=False)
-
-        for j, (train, val) in enumerate(kfold.split(X_train)):
-
-            model = instance.create_wide_residual_network()
-            model.compile(loss="categorical_crossentropy",
-                          optimizer=self.optimizer,
-                          metrics=["acc"])
-            print("Finished compiling")
-            print(epsilon_list)
-            x_train, y_train = X_train[train],Y_train[train]
-            x_val, y_val = X_train[val], Y_train[val]
-            train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
-            train_dataset = train_dataset.batch(self.batch_size)
-            val_dataset = tf.data.Dataset.from_tensor_slices((x_val, y_val))
-            val_dataset = val_dataset.batch(self.batch_size)
-
-            for epoch in range(self.epochs):
-
-                for step, (x_train, y_train) in enumerate(train_dataset):
-                    x_train = self.data_augmentation(x_train, y_train, model, epsilon_list)
-                    hst = model.fit(self.generator.flow(x_train, y_train, self.batch_size), batch_size=self.batch_size)
-                
-                for step, (x_val, y_val) in enumerate(val_dataset):
-                    x_val = self.data_augmentation(x_val, y_val, model, epsilon_list)
-                    hst = model.evaluate(x_val, y_val)
-            with open(
-                    'history_adv_'
-                    + model_name + str(j), 'wb') as file_pi:
-                pickle.dump(hist.history, file_pi)
-
-            loss, acc = model.evaluate(X_test, y_test)
-
-            loss1, acc1 = print_test(premodel,get_adversarial_examples(model, X_test, y_test,
-                                                                    epsilon_list[0]),
-                                     X_test, y_test, epsilon_list[0])
-            loss2, acc2 = print_test(premodel, get_adversarial_examples(model, X_test, y_test,
-                                                                     epsilon_list[1]),
-                                     X_test, y_test, epsilon_list[1])
-            loss3, acc3 = print_test(premodel,
-                                     get_adversarial_examples(model, X_test, y_test,
-                                                              epsilon_list[2]),
-                                     X_test, y_test, epsilon_list[2])
-            loss4, acc4 = print_test(premodel, get_adversarial_examples(model, X_test, y_test,
-                                                                     epsilon_list[3]),
-                                     X_test, y_test,epsilon_list[3])
-            # store the loss and accuracy
-            row = {"loss_clean":loss,
-               "acc_clean":acc,
-               "0.003_loss":loss1,
-               "0.003_acc":acc1,
-               "0.005_loss":loss2,
-               "0.005_acc":acc2,
-               "0.02_acc":acc3,
-               "0.02_loss":loss3,
-               "0.01_acc":acc4,
-               "0.01_loss":loss4
-               }
-            res_df = res_df.append(row, ignore_index=True)
-
-        return res_df
-
+          for step, (x_train, y_train) in enumerate(train_dataset):
+            print(step)
+            x_train = self.data_augmentation(x_train, y_train, model, epsilon_list)
+            model.fit(self.generator.flow(x_train, y_train, self.batch_size), batch_size = self.batch_size, verbose=0.0)
+            
     def data_augmentation(self, X_train, Y_train, pretrained_model,
                           epsilon_list):
         """[summary]
 
         Args:
-            X_train ([type]): [description]
-            Y_train ([type]): [description]
-            pretrained_model ([type]): [description]
-            epsilon_list ([type]): [description]
+            X_train ([type]): Training inputs
+            Y_train ([type]): outputs
+            epsilon_list ([type]): according to SNR
 
         Returns:
-            [type]: [description]
+            augmented batch which consists of the adversarial and clean examples.
         """
         first_half_end = int(len(X_train) / 2)
         second_half_end = int(len(X_train))
@@ -153,7 +70,7 @@ class AdversarialTraining(object):
             x_adv ([type]): [description]
 
         Returns:
-            [type]: [description]
+            combine the clean and adversarial inputs.
         """
         x_mix = []
         for i in range(len(x_clean)):
@@ -189,4 +106,32 @@ class AdversarialTraining(object):
             X_adv.append(
                 np.array(adv_example_targeted_label).reshape(32, 32, 1))
         X_adv = np.array(X_adv)
+
         return X_adv
+def simulate_train(s):
+    
+    kfold = KFold(n_splits=10, random_state=42, shuffle=False)
+    model_name="ResNet_da"
+
+    for j, (train, val) in enumerate(kfold.split(X_train)):
+        if j == s :
+            print(s)
+            model = wideresnet.create_wide_residual_network()
+            model.compile(loss="categorical_crossentropy",
+                        optimizer=sgd,
+                        metrics=["acc"])
+            print("Finished compiling")
+            x_train, y_train = X_train[train],Y_train[train]
+            x_val, y_val = X_train[val], Y_train[val]
+            train_dataset = tf.data.Dataset.from_tensor_slices((x_train, y_train))
+            train_dataset = train_dataset.batch(BS)
+            val_dataset = tf.data.Dataset.from_tensor_slices((x_val, y_val))
+            val_dataset = val_dataset.batch(BS)
+            adversarial_training.train(model, train_dataset, val_dataset, epsilons)
+            name = model_name+"_"+str(j)+".h5"
+            model.save_weights(name)
+if __name__ == "__main__":
+    with Pool(10) as p:
+        print(p.map(f, np.range(10)))
+
+    
