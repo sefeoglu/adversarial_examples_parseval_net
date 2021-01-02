@@ -7,9 +7,7 @@ Using adversarial examples, the project aims to improve the robustness and accur
 
 * Develop Wide Residual Network and Parseval Network 
 * Train Neural Networks using training dataset
-* Generate Adversarial Examples from pre-training neural networks using Fast Gradient Sign Method
-* Augmenting training data with adversarial examples
-* Train new model.
+* Train Neural Network using Adversarial Training Algorithm with AEs.
 * Attack the new model with different perturbated test data.
 
 ### Neural Network Models
@@ -23,6 +21,8 @@ Using adversarial examples, the project aims to improve the robustness and accur
 * [Orthogonality Constraint](/src/models/Parseval_Networks/constraint.py)
 * [Convexity Constraint on Aggregation](/src/models/Parseval_Networks/convexity_constraint.py)
 
+#### Convolutional Neural Network
+
 #### Adversarial Examples
 
 ##### Fast Gradient Sign Method
@@ -31,6 +31,7 @@ Using adversarial examples, the project aims to improve the robustness and accur
 ### Evaluation
 
 * To evaluate the result of the neural network, Signal to Noise Ratio (SNR) is used as metric.
+* Use transferability of AEs to evaluate the models.
 
 ## Development 
 
@@ -63,7 +64,14 @@ Using adversarial examples, the project aims to improve the robustness and accur
 ![Alt text](src/logs/images/SNR.png?raw=true "Signal to Noise Ratio Results of the model")
 
 
+
+![Alt text](src/logs/images/CNN_SNR.png?raw=true "Signal to Noise Ratio Results of the model")
+
+
+
 ![Alt text](src/logs/images/compare_parseval_res.png?raw=true "Compare ResNet with Parseval")
+
+
 
 #### Documentation:
 * [Final Presentation](documents/slide/)
