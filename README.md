@@ -39,15 +39,18 @@ Using adversarial examples, the project aims to improve the robustness and accur
 
 ``` bash
 
+adversarial_examples_parseval_net/src/models
+├── FullyConectedModels
+│   ├── model.py
+│   └── parseval.py
 ├── Parseval_Networks
 │   ├── constraint.py
 │   ├── convexity_constraint.py
 │   ├── parsevalnet.py
-│   └── README.md
-├── README.md
 ├── _utility.py
 └── wideresnet
     └── wresnet.py
+
 
 ```
 #### Analysis:
