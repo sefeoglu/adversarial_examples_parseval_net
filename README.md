@@ -58,7 +58,6 @@ adversarial_examples_parseval_net/src/models
 ├── Adversarial_Images.ipynb
 ├── BasicDeepNetworkResults_Visualization.ipynb
 ├── LearningCurves.ipynb
-├── Prediction.ipynb
 └── SignalToNoiseRatio.ipynb
 
 ```
