@@ -29,6 +29,28 @@ def step_decay(epoch):
     else:
       lrate = initial_lrate*math.pow(factor, 4)
     return lrate
+def step_decay_conv(epoch):
+    """[summary]
+
+    Args:
+        epoch (int): epoch number
+
+    Returns:
+        float: new learning rate
+    """
+    initial_lrate = 0.01
+    factor = 0.1
+    if epoch < 10:
+      lrate = initial_lrate
+    elif epoch < 20:
+      lrate = initial_lrate*math.pow(factor, 1)
+    elif epoch < 30:
+      lrate = initial_lrate*math.pow(factor, 2)
+    elif epoch < 40 :
+      lrate = initial_lrate*math.pow(factor, 3)
+    else:
+      lrate = initial_lrate*math.pow(factor, 4)
+    return lrate
 
 def print_test(model,X_adv, X_test, y_test, epsilon):
     """
@@ -65,5 +87,5 @@ def get_adversarial_examples(pretrained_model, X_true, y_true, epsilon):
     
     return X_adv
     
-
+lrate_conv = LearningRateScheduler(step_decay_conv)
 lrate = LearningRateScheduler(step_decay)
