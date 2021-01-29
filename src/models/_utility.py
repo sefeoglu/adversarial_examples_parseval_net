@@ -14,7 +14,7 @@ def step_decay(epoch):
         epoch (int): epoch number
 
     Returns:
-        float: new learning rate
+        lrate(float): new learning rate
     """
     initial_lrate = 0.1
     factor = 0.1
@@ -30,13 +30,13 @@ def step_decay(epoch):
       lrate = initial_lrate*math.pow(factor, 4)
     return lrate
 def step_decay_conv(epoch):
-    """[summary]
+    """step decay for learning rate in convolutional networks
 
     Args:
         epoch (int): epoch number
 
     Returns:
-        float: new learning rate
+        lrate(float): new learning rate
     """
     initial_lrate = 0.01
     factor = 0.1

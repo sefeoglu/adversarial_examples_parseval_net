@@ -43,10 +43,10 @@ class TightFrame(Constraint):
         """[summary]
 
         Args:
-            w ([type]): [description]
+            w ([type]): weight of conv or linear layers
 
         Returns:
-            [type]: [description]
+            [type]: returns new weights
         """
         transpose_channels = (len(w.shape) == 4)
 

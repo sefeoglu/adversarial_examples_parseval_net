@@ -11,10 +11,11 @@ def preprocessing_data(data):
     """[summary]
 
     Args:
-        data ([type]): [description]
+        data ([type]): consists of image(x) and label(y)
 
     Returns:
-        [type]: [description]
+        transformed_x: resized x
+        transformed_y: label transformed
     """
     x_input = []
     y_input = []
@@ -28,18 +29,18 @@ def preprocessing_data(data):
     transformed_x = transform_imput(x_input.astype('float32'))
 
     transformed_y = transform_output(y_input)
-    return transformed_x, transformed_y
 
+    return transformed_x, transformed_y
 
 
 def transform_output(output):
     """[summary]
 
     Args:
-        output ([type]): [description]
+        output ([type]): label of images 
 
     Returns:
-        [type]: [description]
+        y_cat: categorial label
     """
     labelencoder = LabelEncoder()
     y_df = pd.DataFrame(output, columns=['Label'])
@@ -48,14 +49,14 @@ def transform_output(output):
     return y_cat
 
 
-def transform_imput(x_input):
-    """[summary]
+def transform_input(x_input):
+    """ reshape 2D matrix to 3D tensor
 
     Args:
-        X ([type]): [description]
+        X : image
 
     Returns:
-        [type]: [description]
+        x_input: reshaped image
     """
     img_rows, img_cols = x_input[0].shape
 
