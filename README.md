@@ -1,13 +1,24 @@
 ## Adversarial Examples for improving the robustness of Eye-State Classification :eyes:
 
-### Aim
+### First Aim:
+Project aims to improve the robustness of the model by adding the adversarial examples to the training dataset.
+
+### Second Aim:
 
 Using adversarial examples, the project aims to improve the robustness and accuracy of a machine learning model which detects the eye-states against small perturbation of an image and to solve the misclassification problem caused by natural transformation.
 ### Methodologies
 
 * Develop Wide Residual Network and Parseval Network.
 * Train Neural Networks using training dataset.
-* Train Neural Network using Adversarial Training with AEs.
+* Construct the AEs using FGSM and Random Noise.
+#### The first approach for the first aim.
+===================================================================
+* Train Neural Networks by adding Adversarial Examples (AEs) to the training dataset.
+* Evaluate the models on the original test dataset.
+
+#### The Second approach for the second aim.
+===================================================================
+* Train Neural Networks using Adversarial Training with AEs.
 * Attack the new model with different perturbated test dataset.
 
 ### Neural Network Models
@@ -53,28 +64,10 @@ adversarial_examples_parseval_net/src/models
 
 
 ```
-#### Analysis:
-``` bash
-├── Adversarial_Images.ipynb
-├── BasicDeepNetworkResults_Visualization.ipynb
-├── LearningCurves.ipynb
-└── SignalToNoiseRatio.ipynb
 
-```
-
-### Result:
-![Alt text](src/logs/images/SNR.png?raw=true "Signal to Noise Ratio Results of the model")
-
-
-
-![Alt text](src/logs/images/CNN_SNR.png?raw=true "Signal to Noise Ratio Results of the model")
-
-
-
-![Alt text](src/logs/images/compare_parseval_res.png?raw=true "Compare ResNet with Parseval")
-
-
-
+### [Final Results]
+* [The results of the first approach](src/logs/data_increasing_approach)
+* [The results of the second approach](src/logs/images)
 #### Documentation:
 * [Final Presentation](documents/slide/)
 * [Final Report](documents/)    -- wip
@@ -108,4 +101,4 @@ References
 
 Sefika Efeoglu
 
-Research Project, Data Science MSc, University of Potsdam, SS 2020
+Research Project, Data Science MSc, University of Potsdam
