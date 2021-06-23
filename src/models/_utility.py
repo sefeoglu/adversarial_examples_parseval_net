@@ -1,6 +1,7 @@
 from tensorflow.keras.callbacks import LearningRateScheduler
 # Define configuration parameters
 import math
+import cleverhans
 from cleverhans.tf2.attacks.fast_gradient_method import fast_gradient_method
 import tensorflow as tf
 
