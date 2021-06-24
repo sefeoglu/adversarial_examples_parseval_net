@@ -30,6 +30,7 @@ def step_decay(epoch):
     else:
       lrate = initial_lrate*math.pow(factor, 4)
     return lrate
+    
 def step_decay_conv(epoch):
     """step decay for learning rate in convolutional networks
 
