@@ -29,6 +29,7 @@ percents = [0.25, 0.5, 0.75, 1.0]
 os.mkdir("RandomnoiseModels")
 os.mkdir("AEModels")
 folder_list = ["RandomnoiseModels","AEModels" ]
+
 def data_augmentation(epsilon, percent, X, Y, perturbation_type):
   split = int(len(X)*percent)
   file_name = str(epsilon) +".pickle"
