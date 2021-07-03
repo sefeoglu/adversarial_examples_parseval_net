@@ -66,7 +66,8 @@ adversarial_examples_parseval_net/src/models
 ```
 
 ### [Final Results]
-* [The results of the first approach](src/logs/data_increasing_approach)
+* [The results of the first approach with FGSM](src/logs/AEModels/)
+* [The results of the first approach with Random Noise](src/logs/RandomNoisemodels/)
 * [The results of the second approach](src/logs/images)
 #### Documentation:
 * [Final Presentation](documents/slide/)
