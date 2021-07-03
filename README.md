@@ -70,8 +70,8 @@ adversarial_examples_parseval_net/src/models
 * [The results of the second approach](src/logs/images)
 #### Documentation:
 * [Final Presentation](documents/slide/)
-* [Final Report](documents/)    -- wip
-* [Detailed Expose](documents/Expose) (Accesible)
+* [Final Report](documents/Report/)
+* [Detailed Expose](documents/Expose) 
 
 References
 ============
