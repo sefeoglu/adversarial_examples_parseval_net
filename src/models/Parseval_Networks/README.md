@@ -1,1 +1,3 @@
-## ParsevalNetworks with Orthogonal Constraint
+## ParsevalNetworks
+* Orthogonality Constraint
+* Convexity Constraint
