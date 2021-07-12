@@ -15,7 +15,7 @@ class ParsevalNetwork(Model):
                  input_dim,
                  weight_decay,
                  momentum,
-                 nb_classes=100,
+                 nb_classes=4,
                  N=2,
                  k=1,
                  dropout=0.0,
@@ -25,7 +25,7 @@ class ParsevalNetwork(Model):
         Args:
             weight_decay ([float]): [description]
             input_dim ([tuple]): [input dimension]
-            nb_classes (int, optional): [output class]. Defaults to 100.
+            nb_classes (int, optional): [output class]. Defaults to 4.
             N (int, optional): [the number of blocks]. Defaults to 2.
             k (int, optional): [network width]. Defaults to 1.
             dropout (float, optional): [dropout value to prevent overfitting]. Defaults to 0.0.
