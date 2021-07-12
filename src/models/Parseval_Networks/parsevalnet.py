@@ -297,17 +297,3 @@ class ParsevalNetwork(Model):
         if self.verbose:
             print("Parseval  Network-%d-%d created." % (nb_conv, self.k))
         return model
-
-
-if __name__ == "__main__":
-    
-    init = (32, 32, 1)
-
-    parseval = ParsevalNetwork(init, 0.0005,
-                              0.9,
-                              nb_classes=4,
-                              N=2,
-                              k=2,
-                              dropout=0.3)
-    
-    model = parseval.create_wide_residual_network()

@@ -46,6 +46,7 @@ def data_augmentation(epsilon, percent, X, Y, perturbation_type):
   return aug_X, aug_Y
 
 def experiments(X, Y, folder):
+
   perturbation_type = [ "FGSM" if folder == "AEModels" else: "Random"]
   for epsilon in epsilons:
     for percent in percents:
@@ -53,35 +54,44 @@ def experiments(X, Y, folder):
       train(aug_X, aug_Y, percent, epsilon, folder)
 
 def train(X, Y, percent, epsilon, folder):
+
   "Ten fold CVs of ResNet"
   BS = 64
   init = (32, 32,1)
   sgd = SGD(lr=0.1, momentum=0.9)
   kfold = KFold(n_splits=10, random_state=42, shuffle=False)
   model_name = folder+"/ResNet_"+str(epsilon)+"_"+str(percent)
+  
   for j, (train, val) in enumerate(kfold.split(X)):
+
     resnet = WideResidualNetwork(init, 0.0001, 0.9, nb_classes=4, N=2, k=1, dropout=0.0)
     model = resnet.create_wide_residual_network()
-    x_train, y_train = X[train], Y[train]
 
+    x_train, y_train = X[train], Y[train]
     x_val, y_val = X[val], Y[val]
+
     model.compile(loss="categorical_crossentropy",
                   optimizer=sgd,metrics=["acc"])
+
     hist = model.fit(generator.flow(x_train, y_train, batch_size=64), steps_per_epoch=len(x_train) //64 , epochs=50,
                     validation_data=(x_val, y_val),
                     validation_steps=len(x_val) //64 ,callbacks=[lrate])
-    print(hist)
+
     name = model_name+"_"+str(j)+".h5"
     hist_name = model_name+"_acc"+"_"+str(j)+".pickle"
     hist_name_loss = model_name+"_loss"+"_"+str(j)+".pickle"
+
     with open(hist_name, 'wb') as f:
           pickle.dump(hist.history["val_acc"], f)
+
     with open(hist_name_loss, 'wb') as f:
           pickle.dump(hist.history["val_loss"], f)
+
     model.save_weights(name)
 
 data = hkl.load("data.hkl")
 
 X_train, X_test, Y_train, y_test = data['xtrain'], data['xtest'], data['ytrain'], data['ytest']
+
 for folder in folder_list:
     experiments(X_train, Y_train, folder)

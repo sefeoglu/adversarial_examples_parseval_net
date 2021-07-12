@@ -130,6 +130,7 @@ def simulate_train(s):
             model.save_weights(name)
             
 if __name__ == "__main__":
+    
     data = hkl.load("data.hkl")
     X_train, X_test, Y_train, y_test = data['xtrain'], data['xtest'], data['ytrain'], data['ytest']
     epsilons = [i/1000 for i in range(1,33)] # factor for fast gradient sign method
