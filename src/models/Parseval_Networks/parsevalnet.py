@@ -32,7 +32,7 @@ class ParsevalNetwork(Model):
             verbose (int, optional): [description]. Defaults to 1.
 
         Returns:
-            [Model]: [wideresnet]
+            [Model]: [parsevalnetwork]
         """
         self.weight_decay = weight_decay
         self.input_dim = input_dim
