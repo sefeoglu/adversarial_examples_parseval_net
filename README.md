@@ -29,8 +29,8 @@ Using adversarial examples, the project aims to improve the robustness and accur
 
 #### Parseval Network
 
-* [Orthogonality Constraint](/src/models/Parseval_Networks/constraint.py)
-* [Convexity Constraint on Aggregation](/src/models/Parseval_Networks/convexity_constraint.py)
+* [Orthogonality Constraint on Convolutional Layers](/src/models/Parseval_Networks/constraint.py)
+* [Convexity Constraint on Aggregation Layers](/src/models/Parseval_Networks/convexity_constraint.py)
 
 #### Convolutional Neural Network
 
