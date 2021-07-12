@@ -45,14 +45,12 @@ def learning_curves_plot(train_sizes, mean_acc, std_acc, exp, curve_type):
     plt.plot(mean_list[1], '-', color="darkblue",  label="ResNet-0.5 AEs")
 
 
-
     plt.fill_between(train_sizes, mean_list[2] - std_list[2],  mean_list[2] + std_list[2], alpha=0.1,color="darkorange")
     plt.plot(mean_list[2], '-', color="darkorange",  label="ResNet-0.75 AEs")
 
 
     plt.fill_between(train_sizes,  mean_list[3] - std_list[3], mean_list[3] + std_list[3], alpha=0.1,color="magenta")
     plt.plot(mean_list[3], '-', color="magenta",  label="ResNet-1.0 AEs")
-
 
 
     # # Create plot
@@ -68,18 +66,22 @@ epsilons = 0.001, 0.003, 0.005, 0.01, 0.03]
 percents = [0.25, 0.5, 0.75, 1.0]
 Curve_Types =["loss", "acc"]
 Experiment = ["AEModels", "RandomNoisemodels"]
-mean_list = []
-std_list = []
-train_mean_list = []
-train_std_list = []
+
 
 for exp in Experiment:
     for curve_type in Curve_Types:
+        
         for epsilon in epsilons:
+
+            mean_list, std_list = [], []
+            train_mean_list, train_std_list = [], []
+
             for percent in percents:
+
                 acc_list = learning_curves(percent, epsilon, exp, curve_type)
                 mean_list.append(np.mean(acc_list, axis=0))
                 std_list.append(np.std(acc_list, axis=0))
+
             learning_curves_plot(train_sizes, mean_acc, std_list, exp, curve_type)
 
   
