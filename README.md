@@ -70,7 +70,7 @@ adversarial_examples_parseval_net/src/models
 * [The results of the first approach with Random Noise](src/logs/RandomNoisemodels/)
 * [The results of the second approach](src/logs/images)
 #### Documentation:
-* [Final Presentation](documents/slide/)
+* [Final Presentation]
 * [Final Report](documents/Report/)
 * [Detailed Expose](documents/Expose) 
 
