@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def noise(x, eps=0.3, order=np.inf, clip_min=None, clip_max=None):
     """
     A weak attack that just picks a random point in the attacker's action
@@ -16,9 +17,10 @@ def noise(x, eps=0.3, order=np.inf, clip_min=None, clip_max=None):
     x : torch.Tensor
         The input image.
     """
-    
-    if order != np.inf: raise NotImplementedError(ord)
-    
+
+    if order != np.inf:
+        raise NotImplementedError(ord)
+
     eta = np.random.uniform(low=-eps, high=eps, size=x.shape)
     adv_x = x + eta
 

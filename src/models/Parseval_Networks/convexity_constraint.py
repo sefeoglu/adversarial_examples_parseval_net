@@ -1,5 +1,3 @@
-
-
 from tensorflow.python.ops import math_ops
 from tensorflow.python.ops import variables
 from tensorflow.python.framework import dtypes
@@ -19,7 +17,7 @@ def convex_add(input_layer, layer_3, initial_convex_par=0.5, trainable=False):
             initial_convex_par (float):	Initial value for convex parameter. Must be
                                                                     in [0, 1].
             trainable (bool):			Whether convex parameter should be trainable
-                                                                    or not. 
+                                                                    or not.
 
     Returns:
             tf.Tensor: Result of convex combination
@@ -38,7 +36,7 @@ def convex_add(input_layer, layer_3, initial_convex_par=0.5, trainable=False):
 
     elif initial_convex_par < 1:
         # Compute inverse of sigmoid to find initial p value
-        initial_p_value = -_np.log(1/initial_convex_par - 1)
+        initial_p_value = -_np.log(1 / initial_convex_par - 1)
 
     elif initial_convex_par == 1:
         # Same argument as for 0
@@ -48,10 +46,8 @@ def convex_add(input_layer, layer_3, initial_convex_par=0.5, trainable=False):
         raise ValueError("Convex parameter must be <=1")
 
     p = variables.Variable(
-        initial_value=initial_p_value,
-        dtype=dtypes.float32,
-        trainable=trainable
+        initial_value=initial_p_value, dtype=dtypes.float32, trainable=trainable
     )
 
     lam = math_ops.sigmoid(p)
-    return input_layer * lam + (1 - lam)*layer_3
+    return input_layer * lam + (1 - lam) * layer_3

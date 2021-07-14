@@ -21,12 +21,12 @@ def preprocessing_data(data):
     y_input = []
 
     for row in data:
-        x_input.append(cv2.resize(row['crop'], (32, 32)))
-        y_input.append(row['label'])
+        x_input.append(cv2.resize(row["crop"], (32, 32)))
+        y_input.append(row["label"])
 
     x_input = np.array(x_input)
 
-    transformed_x = transform_imput(x_input.astype('float32'))
+    transformed_x = transform_imput(x_input.astype("float32"))
 
     transformed_y = transform_output(y_input)
 
@@ -37,20 +37,20 @@ def transform_output(output):
     """[summary]
 
     Args:
-        output ([type]): label of images 
+        output ([type]): label of images
 
     Returns:
         y_cat: categorial label
     """
     labelencoder = LabelEncoder()
-    y_df = pd.DataFrame(output, columns=['Label'])
-    y_df['Encoded'] = labelencoder.fit_transform(y_df['Label'])
-    y_cat = to_categorical(y_df['Encoded'])
+    y_df = pd.DataFrame(output, columns=["Label"])
+    y_df["Encoded"] = labelencoder.fit_transform(y_df["Label"])
+    y_cat = to_categorical(y_df["Encoded"])
     return y_cat
 
 
 def transform_input(x_input):
-    """ reshape 2D matrix to 3D tensor
+    """reshape 2D matrix to 3D tensor
 
     Args:
         X : image
@@ -61,7 +61,7 @@ def transform_input(x_input):
     img_rows, img_cols = x_input[0].shape
 
     # transform data set
-    if K.image_data_format() == 'channels_first':
+    if K.image_data_format() == "channels_first":
         x_input = x_input.reshape(x_input.shape[0], 1, img_rows, img_cols)
     else:
         x_input = x_input.reshape(x_input.shape[0], img_rows, img_cols, 1)

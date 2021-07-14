@@ -9,16 +9,19 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+
 class WideResidualNetwork(object):
-    def __init__(self,
-                 input_dim,
-                 weight_decay,
-                 momentum,
-                 nb_classes=100,
-                 N=2,
-                 k=1,
-                 dropout=0.0,
-                 verbose=1):
+    def __init__(
+        self,
+        input_dim,
+        weight_decay,
+        momentum,
+        nb_classes=100,
+        N=2,
+        k=1,
+        dropout=0.0,
+        verbose=1,
+    ):
         """[Assign the initial parameters of the wide residual network]
 
         Args:
@@ -50,19 +53,21 @@ class WideResidualNetwork(object):
         Returns:
             [type]: [description]
         """
-        x = Convolution2D(16, (3, 3),
-                          padding='same',
-                          kernel_initializer='he_normal',
-                          kernel_regularizer=l2(self.weight_decay),
-                          use_bias=False)(input)
+        x = Convolution2D(
+            16,
+            (3, 3),
+            padding="same",
+            kernel_initializer="he_normal",
+            kernel_regularizer=l2(self.weight_decay),
+            use_bias=False,
+        )(input)
 
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
 
-        x = BatchNormalization(axis=channel_axis,
-                               momentum=0.1,
-                               epsilon=1e-5,
-                               gamma_initializer='uniform')(x)
-        x = Activation('relu')(x)
+        x = BatchNormalization(
+            axis=channel_axis, momentum=0.1, epsilon=1e-5, gamma_initializer="uniform"
+        )(x)
+        x = Activation("relu")(x)
         return x
 
     def expand_conv(self, init, base, k, strides=(1, 1)):
@@ -77,33 +82,41 @@ class WideResidualNetwork(object):
         Returns:
             [type]: [description]
         """
-        x = Convolution2D(base * k, (3, 3),
-                          padding='same',
-                          strides=strides,
-                          kernel_initializer='he_normal',
-                          kernel_regularizer=l2(self.weight_decay),
-                          use_bias=False)(init)
+        x = Convolution2D(
+            base * k,
+            (3, 3),
+            padding="same",
+            strides=strides,
+            kernel_initializer="he_normal",
+            kernel_regularizer=l2(self.weight_decay),
+            use_bias=False,
+        )(init)
 
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
 
-        x = BatchNormalization(axis=channel_axis,
-                               momentum=0.1,
-                               epsilon=1e-5,
-                               gamma_initializer='uniform')(x)
-        x = Activation('relu')(x)
+        x = BatchNormalization(
+            axis=channel_axis, momentum=0.1, epsilon=1e-5, gamma_initializer="uniform"
+        )(x)
+        x = Activation("relu")(x)
 
-        x = Convolution2D(base * k, (3, 3),
-                          padding='same',
-                          kernel_initializer='he_normal',
-                          kernel_regularizer=l2(self.weight_decay),
-                          use_bias=False)(x)
+        x = Convolution2D(
+            base * k,
+            (3, 3),
+            padding="same",
+            kernel_initializer="he_normal",
+            kernel_regularizer=l2(self.weight_decay),
+            use_bias=False,
+        )(x)
 
-        skip = Convolution2D(base * k, (1, 1),
-                             padding='same',
-                             strides=strides,
-                             kernel_initializer='he_normal',
-                             kernel_regularizer=l2(self.weight_decay),
-                             use_bias=False)(init)
+        skip = Convolution2D(
+            base * k,
+            (1, 1),
+            padding="same",
+            strides=strides,
+            kernel_initializer="he_normal",
+            kernel_regularizer=l2(self.weight_decay),
+            use_bias=False,
+        )(init)
 
         m = Add()([x, skip])
 
@@ -124,29 +137,34 @@ class WideResidualNetwork(object):
 
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
 
-        x = BatchNormalization(axis=channel_axis,
-                               momentum=0.1,
-                               epsilon=1e-5,
-                               gamma_initializer='uniform')(input)
-        x = Activation('relu')(x)
-        x = Convolution2D(16 * k, (3, 3),
-                          padding='same',
-                          kernel_initializer='he_normal',
-                          kernel_regularizer=l2(self.weight_decay),
-                          use_bias=False)(x)
+        x = BatchNormalization(
+            axis=channel_axis, momentum=0.1, epsilon=1e-5, gamma_initializer="uniform"
+        )(input)
+        x = Activation("relu")(x)
+        x = Convolution2D(
+            16 * k,
+            (3, 3),
+            padding="same",
+            kernel_initializer="he_normal",
+            kernel_regularizer=l2(self.weight_decay),
+            use_bias=False,
+        )(x)
 
-        if dropout > 0.0: x = Dropout(dropout)(x)
+        if dropout > 0.0:
+            x = Dropout(dropout)(x)
 
-        x = BatchNormalization(axis=channel_axis,
-                               momentum=0.1,
-                               epsilon=1e-5,
-                               gamma_initializer='uniform')(x)
-        x = Activation('relu')(x)
-        x = Convolution2D(16 * k, (3, 3),
-                          padding='same',
-                          kernel_initializer='he_normal',
-                          kernel_regularizer=l2(self.weight_decay),
-                          use_bias=False)(x)
+        x = BatchNormalization(
+            axis=channel_axis, momentum=0.1, epsilon=1e-5, gamma_initializer="uniform"
+        )(x)
+        x = Activation("relu")(x)
+        x = Convolution2D(
+            16 * k,
+            (3, 3),
+            padding="same",
+            kernel_initializer="he_normal",
+            kernel_regularizer=l2(self.weight_decay),
+            use_bias=False,
+        )(x)
 
         m = Add()([init, x])
         return m
@@ -166,29 +184,34 @@ class WideResidualNetwork(object):
 
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
         print("conv2:channel:  {}".format(channel_axis))
-        x = BatchNormalization(axis=channel_axis,
-                               momentum=0.1,
-                               epsilon=1e-5,
-                               gamma_initializer='uniform')(input)
-        x = Activation('relu')(x)
-        x = Convolution2D(32 * k, (3, 3),
-                          padding='same',
-                          kernel_initializer='he_normal',
-                          kernel_regularizer=l2(self.weight_decay),
-                          use_bias=False)(x)
+        x = BatchNormalization(
+            axis=channel_axis, momentum=0.1, epsilon=1e-5, gamma_initializer="uniform"
+        )(input)
+        x = Activation("relu")(x)
+        x = Convolution2D(
+            32 * k,
+            (3, 3),
+            padding="same",
+            kernel_initializer="he_normal",
+            kernel_regularizer=l2(self.weight_decay),
+            use_bias=False,
+        )(x)
 
-        if dropout > 0.0: x = Dropout(dropout)(x)
+        if dropout > 0.0:
+            x = Dropout(dropout)(x)
 
-        x = BatchNormalization(axis=channel_axis,
-                               momentum=0.1,
-                               epsilon=1e-5,
-                               gamma_initializer='uniform')(x)
-        x = Activation('relu')(x)
-        x = Convolution2D(32 * k, (3, 3),
-                          padding='same',
-                          kernel_initializer='he_normal',
-                          kernel_regularizer=l2(self.weight_decay),
-                          use_bias=False)(x)
+        x = BatchNormalization(
+            axis=channel_axis, momentum=0.1, epsilon=1e-5, gamma_initializer="uniform"
+        )(x)
+        x = Activation("relu")(x)
+        x = Convolution2D(
+            32 * k,
+            (3, 3),
+            padding="same",
+            kernel_initializer="he_normal",
+            kernel_regularizer=l2(self.weight_decay),
+            use_bias=False,
+        )(x)
 
         m = Add()([init, x])
         return m
@@ -208,29 +231,34 @@ class WideResidualNetwork(object):
 
         channel_axis = 1 if K.image_data_format() == "channels_first" else -1
 
-        x = BatchNormalization(axis=channel_axis,
-                               momentum=0.1,
-                               epsilon=1e-5,
-                               gamma_initializer='uniform')(input)
-        x = Activation('relu')(x)
-        x = Convolution2D(64 * k, (3, 3),
-                          padding='same',
-                          kernel_initializer='he_normal',
-                          kernel_regularizer=l2(self.weight_decay),
-                          use_bias=False)(x)
+        x = BatchNormalization(
+            axis=channel_axis, momentum=0.1, epsilon=1e-5, gamma_initializer="uniform"
+        )(input)
+        x = Activation("relu")(x)
+        x = Convolution2D(
+            64 * k,
+            (3, 3),
+            padding="same",
+            kernel_initializer="he_normal",
+            kernel_regularizer=l2(self.weight_decay),
+            use_bias=False,
+        )(x)
 
-        if dropout > 0.0: x = Dropout(dropout)(x)
+        if dropout > 0.0:
+            x = Dropout(dropout)(x)
 
-        x = BatchNormalization(axis=channel_axis,
-                               momentum=0.1,
-                               epsilon=1e-5,
-                               gamma_initializer='uniform')(x)
-        x = Activation('relu')(x)
-        x = Convolution2D(64 * k, (3, 3),
-                          padding='same',
-                          kernel_initializer='he_normal',
-                          kernel_regularizer=l2(self.weight_decay),
-                          use_bias=False)(x)
+        x = BatchNormalization(
+            axis=channel_axis, momentum=0.1, epsilon=1e-5, gamma_initializer="uniform"
+        )(x)
+        x = Activation("relu")(x)
+        x = Convolution2D(
+            64 * k,
+            (3, 3),
+            padding="same",
+            kernel_initializer="he_normal",
+            kernel_regularizer=l2(self.weight_decay),
+            use_bias=False,
+        )(x)
 
         m = Add()([init, x])
         return m
@@ -256,11 +284,10 @@ class WideResidualNetwork(object):
             x = self.conv1_block(x, self.k, self.dropout)
             nb_conv += 2
 
-        x = BatchNormalization(axis=channel_axis,
-                               momentum=0.1,
-                               epsilon=1e-5,
-                               gamma_initializer='uniform')(x)
-        x = Activation('relu')(x)
+        x = BatchNormalization(
+            axis=channel_axis, momentum=0.1, epsilon=1e-5, gamma_initializer="uniform"
+        )(x)
+        x = Activation("relu")(x)
 
         x = self.expand_conv(x, 32, self.k, strides=(2, 2))
         nb_conv += 2
@@ -269,11 +296,10 @@ class WideResidualNetwork(object):
             x = self.conv2_block(x, self.k, self.dropout)
             nb_conv += 2
 
-        x = BatchNormalization(axis=channel_axis,
-                               momentum=0.1,
-                               epsilon=1e-5,
-                               gamma_initializer='uniform')(x)
-        x = Activation('relu')(x)
+        x = BatchNormalization(
+            axis=channel_axis, momentum=0.1, epsilon=1e-5, gamma_initializer="uniform"
+        )(x)
+        x = Activation("relu")(x)
 
         x = self.expand_conv(x, 64, self.k, strides=(2, 2))
         nb_conv += 2
@@ -282,23 +308,22 @@ class WideResidualNetwork(object):
             x = self.conv3_block(x, self.k, self.dropout)
             nb_conv += 2
 
-        x = BatchNormalization(axis=channel_axis,
-                               momentum=0.1,
-                               epsilon=1e-5,
-                               gamma_initializer='uniform')(x)
-        x = Activation('relu')(x)
+        x = BatchNormalization(
+            axis=channel_axis, momentum=0.1, epsilon=1e-5, gamma_initializer="uniform"
+        )(x)
+        x = Activation("relu")(x)
 
         x = AveragePooling2D((8, 8))(x)
         x = Flatten()(x)
 
-        x = Dense(self.nb_classes,
-                  kernel_regularizer=l2(self.weight_decay),
-                  activation='softmax')(x)
+        x = Dense(
+            self.nb_classes,
+            kernel_regularizer=l2(self.weight_decay),
+            activation="softmax",
+        )(x)
 
         model = Model(ip, x)
 
         if self.verbose:
             print("Wide Residual Network-%d-%d created." % (nb_conv, self.k))
         return model
-
-

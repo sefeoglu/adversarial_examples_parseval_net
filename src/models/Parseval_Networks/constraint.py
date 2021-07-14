@@ -21,6 +21,7 @@ class TightFrame(Constraint):
     Returns:
         Weight matrix after applying regularizer.
     """
+
     def __init__(self, scale, num_passes=1):
         """[summary]
 
@@ -35,8 +36,8 @@ class TightFrame(Constraint):
 
         if num_passes < 1:
             raise ValueError(
-                "Number of passes cannot be non-positive! (got {})".format(
-                    num_passes))
+                "Number of passes cannot be non-positive! (got {})".format(num_passes)
+            )
         self.num_passes = num_passes
 
     def __call__(self, w):
@@ -48,7 +49,7 @@ class TightFrame(Constraint):
         Returns:
             [type]: returns new weights
         """
-        transpose_channels = (len(w.shape) == 4)
+        transpose_channels = len(w.shape) == 4
 
         # Move channels_num to the front in order to make the dimensions correct for matmul
         if transpose_channels:
@@ -60,9 +61,9 @@ class TightFrame(Constraint):
         last = w_reordered
         for i in range(self.num_passes):
             temp1 = math_ops.matmul(last, last, transpose_a=True)
-            temp2 = (1 +
-                     self.scale) * w_reordered - self.scale * math_ops.matmul(
-                         w_reordered, temp1)
+            temp2 = (1 + self.scale) * w_reordered - self.scale * math_ops.matmul(
+                w_reordered, temp1
+            )
 
             last = temp2
 
@@ -73,7 +74,7 @@ class TightFrame(Constraint):
             return last
 
     def get_config(self):
-        return {'scale': self.scale, 'num_passes': self.num_passes}
+        return {"scale": self.scale, "num_passes": self.num_passes}
 
 
 # Alias
