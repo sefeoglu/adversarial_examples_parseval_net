@@ -11,12 +11,12 @@ Using adversarial examples, the project aims to improve the robustness and accur
 * Develop Wide Residual Network and Parseval Network.
 * Train Neural Networks using training dataset.
 * Construct the AEs using FGSM and Random Noise.
-#### The first approach for the first aim.
+#### The approach for the first aim.
 ===================================================================
 * Train Neural Networks by adding Adversarial Examples (AEs) to the training dataset.
 * Evaluate the models on the original test dataset.
 
-#### The Second approach for the second aim.
+#### The approach for the second aim.
 ===================================================================
 * Train Neural Networks using Adversarial Training with AEs.
 * Attack the new model with different perturbated test dataset.
