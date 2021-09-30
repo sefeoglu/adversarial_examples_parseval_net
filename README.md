@@ -1,4 +1,4 @@
-## Adversarial Examples for improving the robustness of Eye-State Classification :eyes:
+## Adversarial Examples for improving the robustness of Eye-State Classification 👁 👁 :
 
 ### First Aim:
 Project aims to improve the robustness of the model by adding the adversarial examples to the training dataset.
