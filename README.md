@@ -66,6 +66,8 @@ adversarial_examples_parseval_net/src/models
 ```
 
 ### Final Results:
+<img src="https://github.com/sefeoglu/adversarial_examples_parseval_net/blob/master/src/logs/AEModels/ROC/Model_Epsilon0.001.png" width="425"/>
+
 * [The results of the first approach with FGSM](src/logs/AEModels/)
 * [The results of the first approach with Random Noise](src/logs/RandomNoisemodels/)
 * [The results of the second approach](src/logs/images)
