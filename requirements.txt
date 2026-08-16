@@ -1,0 +1,10 @@
+numpy==2.4.6
+pandas==3.0.3
+scikit-learn==1.9.0
+scipy==1.17.1
+matplotlib==3.11.0
+opencv-python
+hickle
+cleverhans
+# TensorFlow is Python-version specific; install a compatible build for your interpreter.
+tensorflow
