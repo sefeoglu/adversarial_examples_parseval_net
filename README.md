@@ -1,106 +1,106 @@
-## Adversarial Examples for improving the robustness of Eye-State Classification 👁 👁 :
+# Adversarial Examples for Improving Eye-State Classification
 
-### First Aim:
-Project aims to improve the robustness of the model by adding the adversarial examples to the training dataset.
-We investigated that the robustness of the models on the clean test data are always better than the attacks even though added the pertubated data to the training data.
-### Second Aim:
+[![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-Keras-FF6F00?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/Status-Research%20Project-orange)](https://github.com/)
 
-Using adversarial examples, the project aims to improve the robustness and accuracy of a machine learning model which detects the eye-states against small perturbation of an image and to solve the misclassification problem caused by natural transformation.
-### Methodologies
+This project studies how adversarial examples can be used to improve the robustness of eye-state classification models. The work compares standard training, adversarial augmentation, and adversarial training strategies, with a focus on models such as Wide Residual Networks and Parseval Networks.
 
-* Develop Wide Residual Network and Parseval Network.
-* Train Neural Networks using training dataset.
-* Construct the AEs using FGSM and Random Noise.
-#### The approach for the first aim.
-===================================================================
-* Train Neural Networks by adding Adversarial Examples (AEs) to the training dataset.
-* Evaluate the models on the original test dataset.
+## Goals
 
-#### The approach for the second aim.
-===================================================================
-* Train Neural Networks using Adversarial Training with AEs.
-* Attack the new model with different perturbated test dataset.
+### First objective
+Improve model robustness by incorporating adversarial examples into the training data and evaluating the resulting classifier on clean test data.
 
-### Neural Network Models
+### Second objective
+Increase robustness and accuracy against small input perturbations by training with adversarial examples and evaluating performance under attacked test data.
 
-#### Wide Residual Network
+## Methodology
 
-* Baseline of the Model
+- Develop Wide Residual Network and Parseval Network architectures.
+- Train neural networks on the eye-state dataset.
+- Generate adversarial examples using FGSM and random noise.
+- Compare clean-data performance and adversarial robustness.
+- Use signal-to-noise ratio (SNR) and transferability as evaluation metrics.
 
-#### Parseval Network
+## Models
 
-* [Orthogonality Constraint in Convolutional Layers](/src/models/Parseval_Networks/constraint.py)
-* [Convexity Constraint in Aggregation Layers](/src/models/Parseval_Networks/convexity_constraint.py)
+### Wide Residual Network
+A residual CNN baseline used for comparison.
 
-#### Convolutional Neural Network
+### Parseval Network
+A constrained network designed to improve robustness, using:
 
-#### Adversarial Examples
+- [Orthogonality constraint in convolutional layers](src/models/Parseval_Networks/constraint.py)
+- [Convexity constraint in aggregation layers](src/models/Parseval_Networks/convexity_constraint.py)
 
-##### Fast Gradient Sign Method
-[Examples](src/visualization/Adversarial_Images.ipynb)
+### Visualization and examples
 
-### Evaluation
+- [Adversarial image notebook](src/visualization/Adversarial_Images.ipynb)
+- [ROC curve scripts](src/visualization/ROC_curves.py)
+- [Learning curve scripts](src/visualization/Learning_Curves.py)
 
-* To evaluate the result of the neural network, Signal to Noise Ratio (SNR) is used as metric.
-* Use transferability of AEs to evaluate the models.
+## Repository layout
 
-## Development 
-
-#### Models:
-
-``` bash
-
-adversarial_examples_parseval_net/src/models
-├── FullyConectedModels
-│   ├── model.py
-│   └── parseval.py
-├── Parseval_Networks
-│   ├── constraint.py
-│   ├── convexity_constraint.py
-│   ├── parsevalnet.py
-├── _utility.py
-└── wideresnet
-    └── wresnet.py
-
-
+```text
+adversarial_examples_parseval_net/
+├── README.md
+├── requirements.txt
+├── documents/
+│   ├── Expose/
+│   ├── Report/
+│   └── slide/
+├── src/
+│   ├── data/
+│   ├── logs/
+│   ├── models/
+│   ├── preprocessing/
+│   ├── train/
+│   └── visualization/
+└── LICENSE
 ```
 
-### Final Results:
-<img src="https://github.com/sefeoglu/adversarial_examples_parseval_net/blob/master/src/logs/AEModels/ROC/Model_Epsilon0.001.png" width="425"/>
+## Environment and setup
 
-* [The results of the first approach with FGSM](src/logs/AEModels/)
-* [The results of the first approach with Random Noise](src/logs/RandomNoisemodels/)
-* [The results of the second approach](src/logs/images)
-#### Documentation:
-* [Final Presentation](documents/slide/)
-* [Final Report](documents/Report/)
-* [Detailed Expose](documents/Expose) 
+The project depends on Python scientific, visualization, and deep-learning libraries.
 
-References
-============
-[1] Cisse, Bojanowski, Grave, Dauphin and Usunier, Parseval Networks: Improving Robustness to Adversarial Examples, 2017.
+### Install dependencies
 
-[2] Zagoruyko and Komodakis, Wide Residual Networks, 2016.
-
-``` 
-
-@misc{ParsevalNetworks,
-  author= "Moustapha Cisse, Piotr Bojanowski, Edouard Grave, Yann Dauphin, Nicolas Usunier"
-  title="Parseval Networks: Improving Robustness to Adversarial Examples"
-  year= "2017"
-}
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+pip install -r requirements.txt
 ```
 
-``` 
+### Current environment note
 
-@misc{Wide Residual Networks
-  author= "Sergey Zagoruyko, Nikos Komodakis"
-  title= "Wide Residual Networks"
-  year= "2016"
-}
-```
+The current workspace was checked with Python 3.13.12, and the pinned package versions in [requirements.txt](requirements.txt) match the installed environment:
 
-### Author
+- numpy==2.4.6
+- pandas==3.0.3
+- scikit-learn==1.9.0
+- scipy==1.17.1
+- matplotlib==3.11.0
+
+TensorFlow and CleverHans may require an environment-specific compatible install depending on the Python version and platform. The project code uses TensorFlow/Keras APIs throughout the training and model definitions.
+
+## Results and documentation
+
+- [Results for FGSM experiments](src/logs/AEModels/)
+- [Results for random-noise experiments](src/logs/RandomNoisemodels/)
+- [Additional training and analysis outputs](src/logs/)
+- [Final presentation](documents/slide/)
+- [Final report](documents/Report/)
+- [Detailed expose](documents/Expose)
+
+## References
+
+[1] Cisse, M., Bojanowski, P., Grave, E., Dauphin, Y., and Usunier, N. Parseval Networks: Improving Robustness to Adversarial Examples. 2017.
+
+[2] Zagoruyko, S. and Komodakis, N. Wide Residual Networks. 2016.
+
+## Author
 
 Sefika Efeoglu
 
