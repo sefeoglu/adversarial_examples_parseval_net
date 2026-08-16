@@ -1,13 +1,13 @@
 #  Adversarial Examples for Improving Eye-State Classification
 
-<p align="center">
-  <img src="assets/project-icon.png" alt="Project icon" width="180" />
-</p>
 
 [![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![TensorFlow](https://img.shields.io/badge/TensorFlow-Keras-FF6F00?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Research%20Project-orange)](https://github.com/)
+<p align="center">
+  <img src="assets/project-icon.png" alt="Project icon" width="180" />
+</p>
 
 This project studies how adversarial examples can be used to improve the robustness of eye-state classification models. The work compares standard training, adversarial augmentation, and adversarial training strategies, with a focus on models such as Wide Residual Networks and Parseval Networks.
 
